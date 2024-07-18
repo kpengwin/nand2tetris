@@ -40,8 +40,8 @@ CHIP CPU {
 	ALU(x=Dout, y=ALUyIn, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=ALUout, out=outM, zr=zr, ng=ng);
     Mux16(a=instruction, b=ALUout, sel=instruction[15], out=muxToA);
     Mux16(a=Aout, b=inM, sel=instruction[12], out=ALUyIn);
-    Register(in=muxToA, load=LoadA, out=Aout, out[0..14]=addressM);//A
-    Register(in=ALUout, load=LoadD, out=Dout);//D
+    ARegister(in=muxToA, load=LoadA, out=Aout, out[0..14]=addressM);//A
+    DRegister(in=ALUout, load=LoadD, out=Dout);//D
     PC(in=Aout, reset=reset,inc=doInc, load=jumpCommand, out[0..14]=pc);//PC
     Not(in=ng, out=nng);
     Not(in=zr, out=neq);
