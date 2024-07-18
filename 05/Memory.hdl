@@ -32,7 +32,7 @@ CHIP Memory {
     And(a=useScreen, b=load, out=loadScreen);
     And(a=address[14],b=address[13],out=useKBD);
     RAM16K(in=in, load=loadRAM, address=address[0..13] , out=RAMout);
-    Screen(in=in, load=loadScreen, address=address[1..13], out=Screenout);
+    Screen(in=in, load=loadScreen, address=address[0..12], out=Screenout);
     Keyboard(out=KBDout);
     Mux4Way16(a=RAMout, b=RAMout, c=Screenout,d=KBDout, sel=address[13..14], out=out);
 }
