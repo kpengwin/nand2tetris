@@ -7,6 +7,7 @@ class HackParser:
         with open(target_file, 'r') as inputfile:
             self.lines = [ x.strip() for x in inputfile.readlines() if x.strip() != '']
         self.pos=0
+        self.current_line=0
 
     def __str__(self):
         return self.lines[self.pos]
@@ -25,6 +26,8 @@ class HackParser:
     def advance(self):
         while True:
             if self.has_more_lines():
+                if self._has_instruction() and not self.instruction_type()==HackParser.L_INSTRUCTION:
+                    self.current_line += 1
                 self.pos += 1
             if self._has_instruction() or not self.has_more_lines():
                 break
@@ -76,3 +79,5 @@ class HackParser:
         else:
             raise Exception(f"Invalid call to jump with: {self.instruction_type()}")
 
+    def get_current_line(self):
+        return self.current_line

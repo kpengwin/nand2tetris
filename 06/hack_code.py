@@ -10,6 +10,8 @@ def dest(dest_input):
             "AD":"110",
             "ADM":"111"
             }
+
+    dest_input = ''.join(sorted(dest_input))
     if dest_input in dest_mapping:
         return dest_mapping[dest_input]
     else:
