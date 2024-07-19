@@ -1,5 +1,5 @@
 def symbol_to_binary(symbol,symbol_table):
-    if symbol[0] in "012345689":
+    if symbol[0] in "0123456789":
         return convert_and_pad(int(symbol))
     elif symbol_table.contains(symbol):
         return convert_and_pad(symbol_table.getAddress(symbol))
