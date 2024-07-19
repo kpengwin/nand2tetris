@@ -1,3 +1,5 @@
+# Parser for Hack assembly language
+
 class HackParser:
     A_INSTRUCTION="A_INSTRUCTION"
     C_INSTRUCTION="C_INSTRUCTION"
@@ -6,8 +8,8 @@ class HackParser:
     def __init__(self, target_file):
         with open(target_file, 'r') as inputfile:
             self.lines = [ x.strip() for x in inputfile.readlines() if x.strip() != '']
-        self.pos=0
-        self.current_line=0
+        self.pos=0          # Represents the line number of the input file
+        self.current_line=0 # Represents the target memory address in ROM
         if not self._has_instruction(): self.advance()
 
     def __str__(self):

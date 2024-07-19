@@ -2,7 +2,6 @@
 # Assembler for the Hack assembly language from nand2tetris
 import sys
 import hack_code
-import hack_address
 from hack_parser import HackParser
 from hack_symbol_table import HackSymbolTable
 
@@ -14,7 +13,7 @@ def assemble_cur_instr(parser,symbols):
         # Do nothing, should already be processed
         return
     elif parser.instruction_type()==HackParser.A_INSTRUCTION:
-        return f"{hack_address.symbol_to_binary(parser.symbol(),symbols)}"
+        return f"{hack_code.symbol_to_binary(parser.symbol(),symbols)}"
     else:
         raise Exception(f"Unsupported instruction type: {parser.instruction_type()}")
 

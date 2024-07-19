@@ -1,3 +1,5 @@
+# Holds the symbol table for the Hack assembler including predefined constants
+# addEntry accepts an address of -1 to mean "the next unmapped RAM address"
 
 class HackSymbolTable:
     def __init__(self):

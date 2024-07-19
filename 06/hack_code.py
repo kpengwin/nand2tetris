@@ -1,3 +1,4 @@
+# Helper functions for translating hack assembly code pieces to binary equivalents
 
 def dest(dest_input):
     dest_mapping = {
@@ -53,8 +54,6 @@ def comp(comp_input):
     else:
         raise Exception(f"comp: '{comp_input}' not in {comp_mapping.keys()}")
 
-
-
 def jump(jump_input):
     jump_mapping = {
             ""   :"000",
@@ -71,4 +70,18 @@ def jump(jump_input):
     else:
         raise Exception(f"jump: '{jump_input}' not in {jump_mapping.keys()}")
 
+def symbol_to_binary(symbol,symbol_table):
+    if symbol[0] in "0123456789":
+        return convert_and_pad(int(symbol))
+    elif symbol_table.contains(symbol):
+        return convert_and_pad(symbol_table.getAddress(symbol))
+    else:
+        # New variable name
+        symbol_table.addEntry(symbol,-1)
+        return convert_and_pad(symbol_table.getAddress(symbol))
+
+def convert_and_pad(number):
+    bin_symbol=bin(int(number))[2:]
+    bin_symbol='0'*(16-len(bin_symbol))+bin_symbol
+    return bin_symbol
 
