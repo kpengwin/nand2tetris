@@ -8,6 +8,7 @@ class HackParser:
             self.lines = [ x.strip() for x in inputfile.readlines() if x.strip() != '']
         self.pos=0
         self.current_line=0
+        if not self._has_instruction(): self.advance()
 
     def __str__(self):
         return self.lines[self.pos]
