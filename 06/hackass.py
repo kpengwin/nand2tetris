@@ -13,15 +13,12 @@ def assemble_cur_instr(parser):
         return f"{hack_address.symbol_to_binary(parser.symbol())}"
 
 def output_assembled(filename, debug=False):
-    if debug:
-        assemble_function=debug_output_assemble
-    else:
-        assemble_function=assemble_cur_instr
+    assemble = debug_output_assemble if debug else assemble_cur_instr
     parser=HackParser(filename)
-    print(assemble_function(parser))
+    print(assemble(parser))
     while parser.has_more_lines():
         parser.advance()
-        print(assemble_function(parser))
+        print(assemble(parser))
 
 def debug_output_assemble(parser):
     if parser.instruction_type()==HackParser.C_INSTRUCTION:
