@@ -57,6 +57,18 @@ class VMParser:
             return VMParser.C_PUSH
         elif str(self).startswith("pop"):
             return VMParser.C_POP
+        elif str(self).startswith("label"):
+            return VMParser.C_LABEL
+        elif str(self).startswith("goto"):
+            return VMParser.C_GOTO
+        elif str(self).startswith("if"):
+            return VMParser.C_IF
+        elif str(self).startswith("function"):
+            return VMParser.C_FUNCTION
+        elif str(self).startswith("return"):
+            return VMParser.C_RETURN
+        elif str(self).startswith("call"):
+            return VMParser.C_CALL
         else:
             raise Exception(f"Unknown instruction type for command: {str(self)}")
 
