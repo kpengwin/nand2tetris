@@ -47,7 +47,13 @@ def comp(comp_input):
             "D&A": "0000000",
             "D&M": "1000000",
             "D|A": "0010101",
-            "D|M": "1010101"
+            "D|M": "1010101",
+            "A+D": "0000010",
+            "M+D": "1000010",
+            "A&D": "0000000",
+            "M&D": "1000000",
+            "A|D": "0010101",
+            "M|D": "1010101"
             }
     if comp_input in comp_mapping:
         return comp_mapping[comp_input]
