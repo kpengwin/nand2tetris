@@ -33,19 +33,39 @@ def writePushPop(command, segment, index):
         return _pop(segment,index)
 
 def writeLabel(label):
-    pass
+    return f"({label})"
 
 def writeGoto(label):
-    pass
+    return f"@{label}\n0;JMP"
 
 def writeIf(label):
-    pass
+    return f"{_popd()}\n@{label}\nD;JNE"
 
 def writeFunction(functionName, numVars):
-    pass
+    return f"({functionName})\n@0\nD=A\n@SP\n"+("\n".join(["A=M\nM=D\n@SP\nM=M+1"]))
 
-def writeCall(functionName, nArgs):
-    pass
+def writeCall(functionName, nArgs, dc):
+    code=[
+        # push returnAddress
+        f"@returnAddress{dc}\nD=A\n{_pushd()}",
+        # push LCL
+        f"@LCL\nD=M\n{_pushd()}",
+        # push ARG
+        f"@ARG\nD=M\n{_pushd()}",
+        # push THIS
+        f"@THIS\nD=M\n{_pushd()}",
+        # push THAT
+        f"@THAT\nD=M\n{_pushd()}",
+        # ARG = SP - 5 - nArgs
+        f"@SP\nD=M\n@{5-nArgs}\nD=D-A\n@ARG\nM=D",
+        # LCL = SP
+        f"@SP\nD=M\n@LCL\nM=D",
+        # goto f
+        f"{writeGoto(functionName)}",
+        # (returnAddress)
+        f"{writeLabel(f"returnAddress{dc}")}",
+    ]
+    return "\n".join(code)
 
 def writeReturn():
     pass
