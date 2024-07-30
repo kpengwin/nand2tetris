@@ -51,7 +51,7 @@ class VMParser:
                 break
 
     def instruction_type(self):
-        if str(self) in VMParser.C_ARITHMETIC_COMMANDS:
+        if str(self).split()[0] in VMParser.C_ARITHMETIC_COMMANDS:
             return VMParser.C_ARITHMETIC
         elif str(self).startswith("push"):
             return VMParser.C_PUSH
@@ -76,10 +76,9 @@ class VMParser:
         if self.instruction_type() == VMParser.C_RETURN:
             raise Exception("Cannot call arg1 with C_RETURN")
         elif self.instruction_type() == VMParser.C_ARITHMETIC:
-            return str(self)
+            return str(self).split()[0]
         else:
             return str(self).split()[1]
-        pass
 
     def arg2(self):
         allowed_types = [

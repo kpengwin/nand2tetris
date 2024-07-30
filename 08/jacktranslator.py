@@ -45,13 +45,14 @@ def output_assembly(filename):
         assembly_result=translate(parser, deconflicter)
         if assembly_result: print(assembly_result)
 
-def do_translate(filename):
+def do_translate(filenames):
     print(init_code())
-    output_assembly(filename)
+    for filename in filenames.split(','):
+        output_assembly(filename)
     #print(end_code())
     return
 
-usage_message=f"Usage: ./{sys.argv[0]} [filename.vm]"
+usage_message=f"Usage: ./{sys.argv[0]} [filename1.vm,filename2.vm,etc]"
 if len(sys.argv)<2:
     print(usage_message)
 elif len(sys.argv)==2:
