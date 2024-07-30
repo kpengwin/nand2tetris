@@ -42,7 +42,10 @@ def writeIf(label):
     return f"{_popd()}\n@{label}\nD;JNE"
 
 def writeFunction(functionName, numVars):
-    return f"({functionName})\n@0\nD=A\n@SP\n"+("\n".join(["A=M\nM=D\n@SP\nM=M+1"]))
+    code_start = f"({functionName})\n@SP\nD=A\nA=M\n"
+    #alloc_vars = "A=M\nM=D\n@SP\nM=M+1\n"*int(numVars)
+    alloc_vars = "M=D\nA=A+1\n"*int(numVars)
+    return code_start + alloc_vars[:-1]
 
 def writeCall(functionName, nArgs, dc):
     code=[
@@ -57,18 +60,40 @@ def writeCall(functionName, nArgs, dc):
         # push THAT
         f"@THAT\nD=M\n{_pushd()}",
         # ARG = SP - 5 - nArgs
-        f"@SP\nD=M\n@{5-nArgs}\nD=D-A\n@ARG\nM=D",
+        f"@SP\nD=M\n@{5-int(nArgs)}\nD=D-A\n@ARG\nM=D",
         # LCL = SP
         f"@SP\nD=M\n@LCL\nM=D",
         # goto f
-        f"{writeGoto(functionName)}",
+        writeGoto(functionName),
         # (returnAddress)
-        f"{writeLabel(f"returnAddress{dc}")}",
+        writeLabel("returnAddress"+str(dc)),
     ]
     return "\n".join(code)
 
 def writeReturn():
-    pass
+    #R13 = frame
+    #R14 - retAddr
+    code = [
+        # frame = LCL
+        f"@LCL\nD=M\n@R13\nM=D",
+        # retAddr = *(frame - 5)
+        f"@5\nD=D-A\nA=D\nD=M\n@R14\nM=D",
+        # *ARG = pop()
+        f"{_popd()}\n@ARG\nA=M\nM=D",
+        # SP = ARG + 1
+        f"@ARG\nD=M+1\n@SP\nM=D",
+        # THAT = *(frame - 1)
+        f"@R13\nA=M-1\nD=M\n@THAT\nM=D",
+        # THIS = *(frame - 2)
+        f"@2\nD=-A\n@R13\nA=D+M\nD=M\n@THIS\nM=D",
+        # ARG = *(frame - 3)
+        f"@3\nD=-A\n@R13\nA=D+M\nD=M\n@ARG\nM=D",
+        # LCL = *(frame - 4)
+        f"@4\nD=-A\n@R13\nA=D+M\nD=M\n@LCL\nM=D",
+        # goto retAddr
+        f"@R14\nA=M\n0;JMP",
+    ]
+    return "\n".join(code)
 
 def _pushd():
     return "@SP\nA=M\nM=D\n@SP\nM=M+1"
