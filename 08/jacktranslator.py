@@ -6,18 +6,18 @@ from jackvm_parser import VMParser
 
 def init_code():
     static_init_code="//init sp to 256\n@256\nD=A\n@SP\nM=D\n"
-    init_call = "//call Sys.init()\n"+code.writeCall("Sys.init", 0, 0)+"\n"
+    init_call = "//call Sys.init()\n"+code.writeCall("Sys.init", 0, 0, 999)+"\n"
     static_end_code="//end\n(end_loop)\n@end_loop\n0;JMP"
     return static_init_code + init_call + static_end_code
 
 # Assemble the current instruction for the parser
-def write_cur_instr(parser,deconflicter):
+def write_cur_instr(parser,deconflicter, fileindex):
     print(f"//{str(parser)}")
     i_type=parser.instruction_type()
     if i_type==VMParser.C_ARITHMETIC:
-        print(f"{code.writeArithmetic(parser.arg1(), deconflicter)}")
+        print(f"{code.writeArithmetic(parser.arg1(), deconflicter, fileindex)}")
     elif i_type in [VMParser.C_PUSH, VMParser.C_POP]:
-        print(f"{code.writePushPop(i_type, parser.arg1(), parser.arg2())}")
+        print(f"{code.writePushPop(i_type, parser.arg1(), parser.arg2(), fileindex)}")
     elif i_type==VMParser.C_IF:
         print(f"{code.writeIf(parser.arg1())}")
     elif i_type==VMParser.C_GOTO:
@@ -25,7 +25,7 @@ def write_cur_instr(parser,deconflicter):
     elif i_type==VMParser.C_LABEL:
         print(f"{code.writeLabel(parser.arg1())}")
     elif i_type==VMParser.C_CALL:
-        print(f"{code.writeCall(parser.arg1(), parser.arg2(), deconflicter)}")
+        print(f"{code.writeCall(parser.arg1(), parser.arg2(), deconflicter, fileindex)}")
     elif i_type==VMParser.C_RETURN:
         print(f"{code.writeReturn()}")
     elif i_type==VMParser.C_FUNCTION:
@@ -33,22 +33,22 @@ def write_cur_instr(parser,deconflicter):
     else:
         raise Exception(f"Unsupported instruction type: {parser.instruction_type()}")
 
-def output_assembly(filename):
+def output_assembly(filename,fileindex):
     translate = write_cur_instr
     parser=VMParser(filename)
     deconflicter=1
-    assembly_result=translate(parser, deconflicter)
+    assembly_result=translate(parser, deconflicter, fileindex)
     if assembly_result: print(assembly_result)
     while parser.has_more_lines():
         deconflicter += 1
         parser.advance()
-        assembly_result=translate(parser, deconflicter)
+        assembly_result=translate(parser, deconflicter, fileindex)
         if assembly_result: print(assembly_result)
 
 def do_translate(filenames):
     print(init_code())
-    for filename in filenames.split(','):
-        output_assembly(filename)
+    for fileindex,filename in enumerate(filenames.split(',')):
+        output_assembly(filename,fileindex)
     #print(end_code())
     return
 

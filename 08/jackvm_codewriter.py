@@ -4,7 +4,8 @@ def setFileName(filename):
     #may not use this
     pass
 
-def writeArithmetic(command,dc):
+def writeArithmetic(command,dc, fileindex):
+    uid = f"{fileindex}.{dc}"
     if command == "add":
         return f"{_popd()}\n@SP\nA=M-1\nM=D+M"
     elif command == "sub":
@@ -12,11 +13,11 @@ def writeArithmetic(command,dc):
     elif command == "neg":
         return f"@SP\nA=M-1\nM=-M"
     elif command == "eq":
-        return f"{_popd()}\n@SP\nA=M-1\nDM=D-M\n@eqend{dc}\nD;JNE\n@0\nA=A-1\nD=A\n@SP\nA=M-1\nM=D\n@neqend{dc}\n0;JMP\n(eqend{dc})\n@0\nD=A\nA=M-1\nM=D\n(neqend{dc})"
+        return f"{_popd()}\n@SP\nA=M-1\nDM=D-M\n@eqend{uid}\nD;JNE\n@0\nA=A-1\nD=A\n@SP\nA=M-1\nM=D\n@neqend{uid}\n0;JMP\n(eqend{uid})\n@0\nD=A\nA=M-1\nM=D\n(neqend{uid})"
     elif command == "gt":
-        return f"{_popd()}\n@SP\nA=M-1\nDM=D-M\n@gtend{dc}\nD;JGE\n@0\nA=A-1\nD=A\n@SP\nA=M-1\nM=D\n@ngtend{dc}\n0;JMP\n(gtend{dc})\n@0\nD=A\nA=M-1\nM=D\n(ngtend{dc})"
+        return f"{_popd()}\n@SP\nA=M-1\nDM=D-M\n@gtend{uid}\nD;JGE\n@0\nA=A-1\nD=A\n@SP\nA=M-1\nM=D\n@ngtend{uid}\n0;JMP\n(gtend{uid})\n@0\nD=A\nA=M-1\nM=D\n(ngtend{uid})"
     elif command == "lt":
-        return f"{_popd()}\n@SP\nA=M-1\nDM=D-M\n@ltend{dc}\nD;JLE\n@0\nA=A-1\nD=A\n@SP\nA=M-1\nM=D\n@nltend{dc}\n0;JMP\n(ltend{dc})\n@0\nD=A\nA=M-1\nM=D\n(nltend{dc})"
+        return f"{_popd()}\n@SP\nA=M-1\nDM=D-M\n@ltend{uid}\nD;JLE\n@0\nA=A-1\nD=A\n@SP\nA=M-1\nM=D\n@nltend{uid}\n0;JMP\n(ltend{uid})\n@0\nD=A\nA=M-1\nM=D\n(nltend{uid})"
     elif command == "and":
         return f"{_popd()}\n@SP\nA=M-1\nM=D&M"
     elif command == "or":
@@ -26,11 +27,11 @@ def writeArithmetic(command,dc):
     else:
         raise Exception(f"Unhandled command: {command}")
 
-def writePushPop(command, segment, index):
+def writePushPop(command, segment, index, fileindex):
     if command == "C_PUSH":
-        return _push(segment,index)
+        return _push(segment,index, fileindex)
     else:
-        return _pop(segment,index)
+        return _pop(segment,index, fileindex)
 
 def writeLabel(label):
     return f"({label})"
@@ -47,10 +48,11 @@ def writeFunction(functionName, numVars):
     alloc_vars = "M=D\nA=A+1\n"*int(numVars)
     return code_start + alloc_vars[:-1]
 
-def writeCall(functionName, nArgs, dc):
+def writeCall(functionName, nArgs, dc, fileindex):
+    uid = f"{fileindex}.{dc}"
     code=[
         # push returnAddress
-        f"@returnAddress{dc}\nD=A\n{_pushd()}",
+        f"@returnAddress{uid}\nD=A\n{_pushd()}",
         # push LCL
         f"@LCL\nD=M\n{_pushd()}",
         # push ARG
@@ -66,7 +68,7 @@ def writeCall(functionName, nArgs, dc):
         # goto f
         writeGoto(functionName),
         # (returnAddress)
-        writeLabel("returnAddress"+str(dc)),
+        writeLabel("returnAddress"+str(uid)),
     ]
     return "\n".join(code)
 
@@ -104,7 +106,7 @@ def _popd():
 def _drop():
     return f"@SP\nM=M-1"
 
-def _push(segment, index):
+def _push(segment, index, fileindex):
     pushd=_pushd()
     index = int(index)
     if segment == "argument":
@@ -112,7 +114,7 @@ def _push(segment, index):
     elif segment == "local":
         return f"@{index}\nD=A\n@LCL\nA=D+M\nD=M\n{pushd}"
     elif segment == "static":
-        return f"@static.{index}\nD=M\n{pushd}"
+        return f"@static.{fileindex}.{index}\nD=M\n{pushd}"
     elif segment == "constant":
         return f"@{index}\nD=A\n{pushd}"
     elif segment == "this":
@@ -128,7 +130,7 @@ def _push(segment, index):
     else:
         raise Exception(f"Unhandled segment: {segment}")
 
-def _pop(segment, index):
+def _pop(segment, index, fileindex):
     popd=_popd()
     index = int(index)
     if segment == "argument":
@@ -136,7 +138,7 @@ def _pop(segment, index):
     elif segment == "local":
         return f"@{index}\nD=A\n@LCL\nM=D+M\n{popd}\n@LCL\nA=M\nM=D\n@{index}\nD=A\n@LCL\nM=M-D"
     elif segment == "static":
-        return f"{popd}\n@static.{index}\nM=D"
+        return f"{popd}\n@static.{fileindex}.{index}\nM=D"
     elif segment == "this":
         return f"@{index}\nD=A\n@THIS\nM=D+M\n{popd}\n@THIS\nA=M\nM=D\n@{index}\nD=A\n@THIS\nM=M-D"
     elif segment == "that":
