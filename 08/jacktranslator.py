@@ -6,7 +6,7 @@ from jackvm_parser import VMParser
 
 def init_code():
     static_init_code="//init sp to 256\n@256\nD=A\n@SP\nM=D\n"
-    init_call = "//call Sys.init()\n"+code.writeCall("Sys.init", 0, 0) + "\n"
+    init_call = "//call Sys.init()\n"+code.writeCall("Sys.init", 0, 0)+"\n"
     static_end_code="//end\n(end_loop)\n@end_loop\n0;JMP"
     return static_init_code + init_call + static_end_code
 

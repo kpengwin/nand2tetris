@@ -60,7 +60,7 @@ def writeCall(functionName, nArgs, dc):
         # push THAT
         f"@THAT\nD=M\n{_pushd()}",
         # ARG = SP - 5 - nArgs
-        f"@SP\nD=M\n@{5-int(nArgs)}\nD=D-A\n@ARG\nM=D",
+        f"@SP\nD=M\n@{5+int(nArgs)}\nD=D-A\n@ARG\nM=D",
         # LCL = SP
         f"@SP\nD=M\n@LCL\nM=D",
         # goto f
