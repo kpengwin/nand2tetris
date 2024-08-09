@@ -1,0 +1,56 @@
+{
+  "name": "tree-sitter-jack",
+  "version": "1.0.0",
+  "description": "Tree-Sitter parser for the jack language.",
+  "main": "index.js",
+  "types": "bindings/node",
+  "scripts": {
+    "test": "test",
+    "install": "node-gyp-build",
+    "prebuildify": "prebuildify --napi --strip"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kpengwin/nand2tetris.git"
+  },
+  "keywords": [
+    "jack",
+    "treesitter",
+    "nand2tetris"
+  ],
+  "files": [
+    "grammar.js",
+    "binding.gyp",
+    "prebuilds/**",
+    "bindings/node/*",
+    "queries/*",
+    "src/**"
+  ],
+  "author": "Kenneth Bruce",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kpengwin/nand2tetris/issues"
+  },
+  "homepage": "https://github.com/kpengwin/nand2tetris#readme",
+  "dependencies": {
+    "node-addon-api": "^7.1.0",
+    "node-gyp-build": "^4.8.0"
+  },
+  "peerDependencies": {
+    "tree-sitter": "^0.21.0"
+  },
+  "peerDependenciesMeta": {
+    "tree_sitter": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "prebuildify": "^6.0.0"
+  },
+  "tree-sitter": [
+    {
+      "scope": "source.YOUR_LANGUAGE_NAME",
+      "injection-regex": "^YOUR_LANGUAGE_NAME$"
+    }
+  ]
+}
