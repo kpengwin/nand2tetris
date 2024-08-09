@@ -8,14 +8,24 @@
   "class"
   "constructor"
   "function"
-  "subroutine"
+  "method"
 ] @keyword
 
 (class_definition class_name: (identifier) @function)
 
-(subroutine_definition name: (identifier) @function)
+(function_definition name: (identifier) @function)
+
+(constructor_definition name: (identifier) @function)
+
+(method_definition name: (identifier) @function)
 
 (let_statement var_name: (identifier) @variable.parameter)
+
+[
+ (single_line_comment)
+ (multi_line_comment)
+ (doc_string_comment)
+ ] @comment
 
 (type) @type
 

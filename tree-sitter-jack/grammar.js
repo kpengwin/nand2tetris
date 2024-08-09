@@ -4,13 +4,15 @@
 module.exports = grammar({
   name: 'jack',
 
-  rules: {
-    source_file: $ => repeat($._definition),
+  extras: $ => [
+    /\s/,
+    $.single_line_comment,
+    $.multi_line_comment,
+    $.doc_string_comment
+  ],
 
-    _definition: $ => choice(
-      $.class_definition
-      // TODO: other kinds of definitions
-    ),
+  rules: {
+    source_file: $ => repeat($.class_definition),
 
     class_definition: $ => seq(
       'class',
@@ -19,30 +21,59 @@ module.exports = grammar({
     ),
 
     class_block: $ => seq(
-      field('start', '{'),
+      '{',
       repeat($._class_statement),
-      field('end', '}')
+      '}'
     ),
 
     _class_statement: $ => choice(
-      //$.field_variable,
-      //$.static_variable,
-      $.subroutine_definition
-      // TODO: other kinds of statements
+      $._class_variable,
+      $._subroutine_definition
     ),
 
-    subroutine_definition: $ => seq(
-      $._subroutine_flavor,
+    _class_variable: $ => choice(
+      $.field_variable,
+      $.static_variable,
+    ),
+
+    field_variable: $ => seq(
+      'field',
+      $.type,
+      sepBy(',', field('var_name', $.identifier))
+    ),
+
+    static_variable: $ => seq(
+      'static',
+      $.type,
+      sepBy(',', field('var_name', $.identifier))
+    ),
+
+    _subroutine_definition: $ => choice(
+      $.constructor_definition,
+      $.function_definition,
+      $.method_definition
+    ),
+
+    constructor_definition: $ => seq(
+      'constructor',
+      $._subroutine_generic_definition
+    ),
+
+    function_definition: $ => seq(
+      'function',
+      $._subroutine_generic_definition
+    ),
+
+    method_definition: $ => seq(
+      'method',
+      $._subroutine_generic_definition
+    ),
+
+    _subroutine_generic_definition: $ => seq(
       $.type,
       field('name', $.identifier),
       $.parameter_list,
       $.subroutine_block
-    ),
-
-    _subroutine_flavor: $ => choice(
-      'constructor',
-      'function',
-      'subroutine'
     ),
 
     parameter_list: $ => seq(
@@ -142,10 +173,35 @@ module.exports = grammar({
 
     identifier: $ => /[a-zA-Z]+/,
 
-    number: $ => /\d+/
+    number: $ => /\d+/,
+
+    _comment: $ => choice(
+      $.single_line_comment,
+      $.multi_line_comment,
+      $.doc_string_comment
+    ),
+
+    single_line_comment: $ => seq(
+      '//',
+      /[^\n]*/
+    ),
+
+    multi_line_comment: $ => seq(
+      '/*',
+      /[^(*\/)]*/,
+      '*/'
+    ),
+
+    doc_string_comment: $ => seq(
+      '/**',
+      /[^(*\/)]*/,
+      '*/'
+    )
   }
 });
 
+
+// From: https://github.com/tree-sitter/tree-sitter-rust/blob/master/grammar.js#L1605-L1630
 function sepBy1(sep, rule) {
   return seq(rule, repeat(seq(sep, rule)))
 }
