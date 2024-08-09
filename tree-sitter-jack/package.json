@@ -49,8 +49,12 @@
   },
   "tree-sitter": [
     {
-      "scope": "source.YOUR_LANGUAGE_NAME",
-      "injection-regex": "^YOUR_LANGUAGE_NAME$"
+      "scope": "source.jack",
+      "file-types": [
+        "jack"
+      ],
+      "injection-regex": "jack",
+      "highlights": "queries/highlights.scm"
     }
   ]
 }

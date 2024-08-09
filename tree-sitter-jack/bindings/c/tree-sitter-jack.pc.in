@@ -1,0 +1,11 @@
+prefix=@PREFIX@
+libdir=@LIBDIR@
+includedir=@INCLUDEDIR@
+
+Name: tree-sitter-jack
+Description: Jack grammar for tree-sitter
+URL: @URL@
+Version: @VERSION@
+Requires: @REQUIRES@
+Libs: -L${libdir} @ADDITIONAL_LIBS@ -ltree-sitter-jack
+Cflags: -I${includedir}

@@ -2,7 +2,7 @@
 // @ts-check
 
 module.exports = grammar({
-  name: 'YOUR_LANGUAGE_NAME',
+  name: 'jack',
 
   rules: {
     source_file: $ => repeat($._definition),
@@ -14,14 +14,14 @@ module.exports = grammar({
 
     class_definition: $ => seq(
       'class',
-      $.identifier,
+      field('class_name', $.identifier),
       $.class_block
     ),
 
     class_block: $ => seq(
-      '{',
+      field('start', '{'),
       repeat($._class_statement),
-      '}'
+      field('end', '}')
     ),
 
     _class_statement: $ => choice(
@@ -32,14 +32,14 @@ module.exports = grammar({
     ),
 
     subroutine_definition: $ => seq(
-      $.subroutine_flavor,
+      $._subroutine_flavor,
       $.type,
-      $.identifier,
+      field('name', $.identifier),
       $.parameter_list,
       $.subroutine_block
     ),
 
-    subroutine_flavor: $ => choice(
+    _subroutine_flavor: $ => choice(
       'constructor',
       'function',
       'subroutine'
@@ -47,14 +47,13 @@ module.exports = grammar({
 
     parameter_list: $ => seq(
       '(',
-      repeat($._parameter_statement),
+      sepBy(',', $._parameter_statement),
       ')'
     ),
 
     _parameter_statement: $ => seq(
       $.type,
       $.identifier
-      // TODO: comma separated?
     ),
 
     subroutine_block: $ => seq(
@@ -74,7 +73,7 @@ module.exports = grammar({
 
     let_statement: $ => seq(
       'let',
-      $.identifier,
+      field('var_name', $.identifier),
       '=',
       $._expression,
       ';'
@@ -82,7 +81,7 @@ module.exports = grammar({
 
     do_statement: $ => seq(
       'do',
-      $._expression,
+      sepBy('.', $._expression),
       '(',
       repeat($._expression),
       ')',
@@ -91,22 +90,50 @@ module.exports = grammar({
 
     return_statement: $ => seq(
       'return',
-      $.identifier,
+      optional($.identifier),
       ';'
     ),
 
     _expression: $ => choice(
       $.identifier,
-      $.number
+      $.number,
+      $.quoted_string
       // TODO: other kinds of expressions
     ),
 
     type: $ => choice(
-      $.primitive_type,
+      $._primitive_type,
       $.identifier
     ),
 
-    primitive_type: $ => choice(
+    // Adapted from https://github.com/tree-sitter-grammars/tree-sitter-lua/blob/main/grammar.js
+    quoted_string: $ => seq(
+      seq(
+        field('start', alias('"', '"')),
+        field(
+          'content',
+          optional(alias($._string_content, $.string_content))
+        ),
+        field('end', alias('"', '"'))
+      )
+    ),
+    _string_content: $ => repeat1(choice(token.immediate(prec(1, /[^"\\]+/)), $.escape_sequence)),
+
+    escape_sequence: () =>
+      token.immediate(
+        seq(
+          '\\',
+          choice(
+            /[\nabfnrtv\\'"]/,
+            /z\s*/,
+            /[0-9]{1,3}/,
+            /x[0-9a-fA-F]{2}/,
+            /u\{[0-9a-fA-F]+\}/
+          )
+        )
+      ),
+
+    _primitive_type: $ => choice(
       'int',
       'char',
       'boolean',
@@ -118,3 +145,11 @@ module.exports = grammar({
     number: $ => /\d+/
   }
 });
+
+function sepBy1(sep, rule) {
+  return seq(rule, repeat(seq(sep, rule)))
+}
+
+function sepBy(sep, rule) {
+  return optional(sepBy1(sep, rule))
+}

@@ -2,7 +2,28 @@
   {
     "type": "class_block",
     "named": true,
-    "fields": {},
+    "fields": {
+      "end": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "}",
+            "named": false
+          }
+        ]
+      },
+      "start": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "{",
+            "named": false
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": false,
@@ -17,17 +38,24 @@
   {
     "type": "class_definition",
     "named": true,
-    "fields": {},
+    "fields": {
+      "class_name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
           "type": "class_block",
-          "named": true
-        },
-        {
-          "type": "identifier",
           "named": true
         }
       ]
@@ -39,7 +67,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "identifier",
@@ -47,6 +75,10 @@
         },
         {
           "type": "number",
+          "named": true
+        },
+        {
+          "type": "quoted_string",
           "named": true
         }
       ]
@@ -55,9 +87,20 @@
   {
     "type": "let_statement",
     "named": true,
-    "fields": {},
+    "fields": {
+      "var_name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
@@ -66,6 +109,10 @@
         },
         {
           "type": "number",
+          "named": true
+        },
+        {
+          "type": "quoted_string",
           "named": true
         }
       ]
@@ -91,9 +138,40 @@
     }
   },
   {
-    "type": "primitive_type",
+    "type": "quoted_string",
     "named": true,
-    "fields": {}
+    "fields": {
+      "content": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "string_content",
+            "named": true
+          }
+        ]
+      },
+      "end": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "\"",
+            "named": false
+          }
+        ]
+      },
+      "start": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "\"",
+            "named": false
+          }
+        ]
+      }
+    }
   },
   {
     "type": "return_statement",
@@ -101,7 +179,7 @@
     "fields": {},
     "children": {
       "multiple": false,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "identifier",
@@ -120,6 +198,21 @@
       "types": [
         {
           "type": "class_definition",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "string_content",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "escape_sequence",
           "named": true
         }
       ]
@@ -151,25 +244,28 @@
   {
     "type": "subroutine_definition",
     "named": true,
-    "fields": {},
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
       "types": [
-        {
-          "type": "identifier",
-          "named": true
-        },
         {
           "type": "parameter_list",
           "named": true
         },
         {
           "type": "subroutine_block",
-          "named": true
-        },
-        {
-          "type": "subroutine_flavor",
           "named": true
         },
         {
@@ -180,28 +276,23 @@
     }
   },
   {
-    "type": "subroutine_flavor",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "type",
     "named": true,
     "fields": {},
     "children": {
       "multiple": false,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "identifier",
           "named": true
-        },
-        {
-          "type": "primitive_type",
-          "named": true
         }
       ]
     }
+  },
+  {
+    "type": "\"",
+    "named": false
   },
   {
     "type": "(",
@@ -209,6 +300,14 @@
   },
   {
     "type": ")",
+    "named": false
+  },
+  {
+    "type": ",",
+    "named": false
+  },
+  {
+    "type": ".",
     "named": false
   },
   {
@@ -242,6 +341,10 @@
   {
     "type": "do",
     "named": false
+  },
+  {
+    "type": "escape_sequence",
+    "named": true
   },
   {
     "type": "function",
