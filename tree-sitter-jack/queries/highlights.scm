@@ -4,6 +4,7 @@
 [
   "let"
   "do"
+  "while"
   "return"
   "class"
   "constructor"
@@ -11,7 +12,7 @@
   "method"
 ] @keyword
 
-(class_definition class_name: (identifier) @function)
+(class_definition class_name: (identifier) @constant)
 
 (function_definition name: (identifier) @function)
 
@@ -24,6 +25,9 @@
 
 (variable_declaration var_name: (identifier) @variable.parameter)
 
+(subroutine_call class_name: (identifier) @constant)
+(subroutine_call function_name: (identifier) @function)
+
 [
  (single_line_comment)
  (multi_line_comment)
@@ -34,8 +38,18 @@
 
 (number) @number
 
+(ERROR) @error
+
 [
  "="
+ "<"
+ ">"
+ "+"
+ "-"
+ "/"
+ "*"
+ "&"
+ "|"
 ] @operator
 
 [

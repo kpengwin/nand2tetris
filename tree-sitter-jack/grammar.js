@@ -11,7 +11,10 @@ module.exports = grammar({
     $.doc_string_comment
   ],
 
-  conflicts: $ => [],
+  conflicts: $ => [
+    [$.unary_expression, $.dual_expression],
+    [$.dual_expression]
+  ],
 
   rules: {
     source_file: $ => repeat($.class_definition),
@@ -100,14 +103,14 @@ module.exports = grammar({
       $.do_statement,
       //$.if_statement,
       //$.else_statement,
-      //$.while_statement,
+      $.while_statement,
       $.return_statement,
       $.variable_declaration
     ),
 
     let_statement: $ => seq(
       'let',
-      field('var_name', $.identifier),
+      field('var_name', choice($.identifier, $.array_element)),
       '=',
       $._expression,
       ';'
@@ -117,6 +120,16 @@ module.exports = grammar({
       'do',
       $.subroutine_call,
       ';'
+    ),
+
+    while_statement: $ => seq(
+      'while',
+      '(',
+      $._expression,
+      ')',
+      '{',
+      repeat($._statement),
+      '}'
     ),
 
     return_statement: $ => seq(
@@ -138,8 +151,16 @@ module.exports = grammar({
       $.quoted_string,
       $.array_element,
       $.unary_expression,
-      $.subroutine_call
+      $.subroutine_call,
+      $.parenthetical_expr,
+      $.dual_expression
       // TODO: other kinds of expressions
+    ),
+
+    parenthetical_expr: $ => seq(
+      '(',
+      $._expression,
+      ')'
     ),
 
     subroutine_call: $ => seq(
@@ -159,16 +180,34 @@ module.exports = grammar({
       $._expression
     ),
 
+    dual_expression: $ => seq(
+      $._expression,
+      $.dual_operator,
+      $._expression
+    ),
+
     unary_operator: $ => choice(
       '~',
       '-'
     ),
 
+    dual_operator: $ => choice(
+      '+',
+      '-',
+      '*',
+      '/',
+      '&',
+      '|',
+      '<',
+      '>',
+      '='
+    ),
+
     array_element: $ => (
       field('array_name', $.identifier),
-      '[',
+      token.immediate('['),
       $.identifier,
-      ']'
+      token.immediate(']')
     ),
 
     type: $ => choice(
