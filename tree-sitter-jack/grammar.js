@@ -11,6 +11,8 @@ module.exports = grammar({
     $.doc_string_comment
   ],
 
+  conflicts: $ => [],
+
   rules: {
     source_file: $ => repeat($.class_definition),
 
@@ -99,7 +101,8 @@ module.exports = grammar({
       //$.if_statement,
       //$.else_statement,
       //$.while_statement,
-      $.return_statement
+      $.return_statement,
+      $.variable_declaration
     ),
 
     let_statement: $ => seq(
@@ -112,10 +115,7 @@ module.exports = grammar({
 
     do_statement: $ => seq(
       'do',
-      sepBy('.', $._expression),
-      '(',
-      repeat($._expression),
-      ')',
+      $.subroutine_call,
       ';'
     ),
 
@@ -125,11 +125,50 @@ module.exports = grammar({
       ';'
     ),
 
+    variable_declaration: $ => seq(
+      'var',
+      $.type,
+      sepBy(',', field('var_name', $.identifier)),
+      ';'
+    ),
+
     _expression: $ => choice(
       $.identifier,
       $.number,
-      $.quoted_string
+      $.quoted_string,
+      $.array_element,
+      $.unary_expression,
+      $.subroutine_call
       // TODO: other kinds of expressions
+    ),
+
+    subroutine_call: $ => seq(
+      optional(seq(field('class_name', $.identifier), '.')),
+      field('function_name', $.identifier),
+      $.argument_list
+    ),
+
+    argument_list: $ => seq(
+      '(',
+      sepBy(',', $._expression),
+      ')'
+    ),
+
+    unary_expression: $ => seq(
+      $.unary_operator,
+      $._expression
+    ),
+
+    unary_operator: $ => choice(
+      '~',
+      '-'
+    ),
+
+    array_element: $ => (
+      field('array_name', $.identifier),
+      '[',
+      $.identifier,
+      ']'
     ),
 
     type: $ => choice(
