@@ -1,0 +1,177 @@
+=============
+Class
+=============
+
+class Main {
+
+}
+
+---
+(source_file
+  (class_definition
+    class_name: (identifier)
+    (class_block)))
+
+=============
+Class with static variables
+=============
+
+class Main {
+  static int a, b;
+}
+
+---
+(source_file
+  (class_definition
+    class_name: (identifier)
+    (class_block
+      (static_variable
+        (type)
+        var_name: (identifier)
+        var_name: (identifier)
+      ))))
+
+=============
+Class with static and field variables
+=============
+
+class Main {
+  static int a;
+  field int b;
+
+}
+
+---
+(source_file
+  (class_definition
+    class_name: (identifier)
+    (class_block
+      (static_variable
+        (type)
+        var_name: (identifier))
+      (field_variable
+        (type)
+        var_name: (identifier))
+      )))
+
+=============
+Class with constructor
+=============
+
+class Meta {
+
+  constructor Meta new() {
+    return this;
+  }
+
+}
+
+---
+(source_file
+  (class_definition
+    class_name: (identifier)
+    (class_block
+      (constructor_definition
+        (type (identifier))
+        name: (identifier) (parameter_list)
+        (subroutine_block
+          (return_statement (identifier))
+        )
+      )
+    )))
+
+=============
+Class with method
+=============
+
+class Meta {
+
+  method void testMethod() {
+    return;
+  }
+
+}
+
+---
+(source_file
+  (class_definition
+    class_name: (identifier)
+    (class_block
+      (method_definition
+        (type (identifier))
+        name: (identifier) (parameter_list)
+        (subroutine_block
+          (return_statement)
+        )
+      )
+    )))
+
+
+
+=============
+Class with function (var, let statements)
+=============
+
+class Meta {
+
+  function int testFunc() {
+    var int i;
+    let i = 1;
+    return i;
+  }
+
+}
+
+---
+(source_file
+  (class_definition
+    class_name: (identifier)
+    (class_block
+      (function_definition
+        (type)
+        name: (identifier) (parameter_list)
+        (subroutine_block
+          (variable_declaration (type) var_name: (identifier))
+          (let_statement var_name: (identifier) (number))
+          (return_statement (identifier))
+        )
+      )
+    )))
+
+=============
+Class with function (var, let, while statements)
+=============
+
+class Meta {
+
+  function int testFunc() {
+    var int i;
+    let i = 1;
+    while ( i < 3 ) {
+      let i = i + 1;
+    }
+    return i;
+  }
+
+}
+
+---
+(source_file
+  (class_definition
+    class_name: (identifier)
+    (class_block
+      (function_definition
+        (type)
+        name: (identifier) (parameter_list)
+        (subroutine_block
+          (variable_declaration (type) var_name: (identifier))
+          (let_statement var_name: (identifier) (number))
+          (while_statement (dual_expression (identifier) (dual_operator) (number))
+            (while_block
+              (let_statement var_name: (identifier) (dual_expression (identifier) (dual_operator) (number)))
+            )
+          )
+          (return_statement (identifier))
+        )
+      )
+    )))

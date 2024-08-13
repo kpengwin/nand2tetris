@@ -44,13 +44,15 @@ module.exports = grammar({
     field_variable: $ => seq(
       'field',
       $.type,
-      sepBy(',', field('var_name', $.identifier))
+      sepBy(',', field('var_name', $.identifier)),
+      ';'
     ),
 
     static_variable: $ => seq(
       'static',
       $.type,
-      sepBy(',', field('var_name', $.identifier))
+      sepBy(',', field('var_name', $.identifier)),
+      ';'
     ),
 
     _subroutine_definition: $ => choice(
@@ -127,6 +129,10 @@ module.exports = grammar({
       '(',
       $._expression,
       ')',
+      $.while_block
+    ),
+
+    while_block: $ => seq(
       '{',
       repeat($._statement),
       '}'

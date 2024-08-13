@@ -697,6 +697,37 @@
     }
   },
   {
+    "type": "while_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "do_statement",
+          "named": true
+        },
+        {
+          "type": "let_statement",
+          "named": true
+        },
+        {
+          "type": "return_statement",
+          "named": true
+        },
+        {
+          "type": "variable_declaration",
+          "named": true
+        },
+        {
+          "type": "while_statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "while_statement",
     "named": true,
     "fields": {},
@@ -709,19 +740,11 @@
           "named": true
         },
         {
-          "type": "do_statement",
-          "named": true
-        },
-        {
           "type": "dual_expression",
           "named": true
         },
         {
           "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "let_statement",
           "named": true
         },
         {
@@ -737,10 +760,6 @@
           "named": true
         },
         {
-          "type": "return_statement",
-          "named": true
-        },
-        {
           "type": "subroutine_call",
           "named": true
         },
@@ -749,11 +768,7 @@
           "named": true
         },
         {
-          "type": "variable_declaration",
-          "named": true
-        },
-        {
-          "type": "while_statement",
+          "type": "while_block",
           "named": true
         }
       ]
