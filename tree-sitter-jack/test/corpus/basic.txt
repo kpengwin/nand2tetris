@@ -13,6 +13,41 @@ class Main {
     (class_block)))
 
 =============
+Class with comment
+=============
+
+//main
+class Main {
+
+}
+
+---
+(source_file
+  (single_line_comment)
+  (class_definition
+    class_name: (identifier)
+    (class_block)))
+
+=============
+Class with doc/multi_line_comments
+=============
+/** Docstring comment */
+/* Multi
+   Line
+   Comment */
+class Main {
+
+}
+
+---
+(source_file
+  (doc_string_comment)
+  (multi_line_comment)
+  (class_definition
+    class_name: (identifier)
+    (class_block)))
+
+=============
 Class with static variables
 =============
 
@@ -30,6 +65,35 @@ class Main {
         var_name: (identifier)
         var_name: (identifier)
       ))))
+
+=============
+Class with method, array, array assignment
+=============
+
+class Main {
+  field Array a;
+  method void testMethod() {
+    let a[3] = 2;
+  }
+
+}
+
+---
+(source_file
+  (class_definition
+    class_name: (identifier)
+    (class_block
+      (field_variable
+        (type)
+        var_name: (identifier)
+      )
+    (method_definition (type (identifier)) name: (identifier) (parameter_list)
+      (statement_block
+        (let_statement (array_element array_name: (identifier) (identifier)))
+      )
+    )
+    )))
+
 
 =============
 Class with static and field variables
@@ -74,7 +138,7 @@ class Meta {
       (constructor_definition
         (type (identifier))
         name: (identifier) (parameter_list)
-        (subroutine_block
+        (statement_block
           (return_statement (identifier))
         )
       )
@@ -100,7 +164,7 @@ class Meta {
       (method_definition
         (type (identifier))
         name: (identifier) (parameter_list)
-        (subroutine_block
+        (statement_block
           (return_statement)
         )
       )
@@ -130,7 +194,7 @@ class Meta {
       (function_definition
         (type)
         name: (identifier) (parameter_list)
-        (subroutine_block
+        (statement_block
           (variable_declaration (type) var_name: (identifier))
           (let_statement var_name: (identifier) (number))
           (return_statement (identifier))
@@ -139,7 +203,7 @@ class Meta {
     )))
 
 =============
-Class with function (var, let, while statements)
+Class with function (var, let, do, while statements)
 =============
 
 class Meta {
@@ -148,6 +212,45 @@ class Meta {
     var int i;
     let i = 1;
     while ( i < 3 ) {
+      do Math.increment(i);
+    }
+    return i;
+  }
+
+}
+
+---
+(source_file
+  (class_definition
+    class_name: (identifier)
+    (class_block
+      (function_definition
+        (type)
+        name: (identifier) (parameter_list)
+        (statement_block
+          (variable_declaration (type) var_name: (identifier))
+          (let_statement var_name: (identifier) (number))
+          (while_statement (dual_expression (identifier) (dual_operator) (number))
+            (statement_block
+              (do_statement (subroutine_call class_name: (identifier)
+                                          function_name: (identifier)
+                                          (argument_list (identifier)))))
+          )
+          (return_statement (identifier))
+        )
+      )
+    )))
+
+=============
+Class with function (var, let, if statements)
+=============
+
+class Meta {
+
+  function int testFunc() {
+    var int i;
+    let i = 1;
+    if ( i < 3 ) {
       let i = i + 1;
     }
     return i;
@@ -163,11 +266,11 @@ class Meta {
       (function_definition
         (type)
         name: (identifier) (parameter_list)
-        (subroutine_block
+        (statement_block
           (variable_declaration (type) var_name: (identifier))
           (let_statement var_name: (identifier) (number))
-          (while_statement (dual_expression (identifier) (dual_operator) (number))
-            (while_block
+          (if_statement (dual_expression (identifier) (dual_operator) (number))
+            (statement_block
               (let_statement var_name: (identifier) (dual_expression (identifier) (dual_operator) (number)))
             )
           )
@@ -175,3 +278,54 @@ class Meta {
         )
       )
     )))
+
+
+=============
+Class with function (var, let, if-else statements)
+=============
+
+class Meta {
+
+  function int testFunc() {
+    var int i;
+    let i = 1;
+    if ( i < 3 ) {
+      let i = i + 3;
+    } else {
+      let i = 3;
+    }
+    return i;
+  }
+
+}
+
+---
+(source_file
+  (class_definition
+    class_name: (identifier)
+    (class_block
+      (function_definition
+        (type)
+        name: (identifier) (parameter_list)
+        (statement_block
+          (variable_declaration (type) var_name: (identifier))
+          (let_statement var_name: (identifier) (number))
+          (if_statement (dual_expression (identifier) (dual_operator) (number))
+            (statement_block
+              (let_statement var_name: (identifier) (dual_expression (identifier) (dual_operator) (number)))
+            )
+            (else_statement
+              (statement_block
+                (let_statement var_name: (identifier) (number)))
+            )
+          )
+          (return_statement (identifier))
+        )
+      )
+    )))
+
+
+
+
+
+

@@ -80,7 +80,7 @@ module.exports = grammar({
       $.type,
       field('name', $.identifier),
       $.parameter_list,
-      $.subroutine_block
+      $.statement_block
     ),
 
     parameter_list: $ => seq(
@@ -94,7 +94,7 @@ module.exports = grammar({
       $.identifier
     ),
 
-    subroutine_block: $ => seq(
+    statement_block: $ => seq(
       '{',
       repeat($._statement),
       '}'
@@ -103,8 +103,7 @@ module.exports = grammar({
     _statement: $ => choice(
       $.let_statement,
       $.do_statement,
-      //$.if_statement,
-      //$.else_statement,
+      $.if_statement,
       $.while_statement,
       $.return_statement,
       $.variable_declaration
@@ -112,7 +111,7 @@ module.exports = grammar({
 
     let_statement: $ => seq(
       'let',
-      field('var_name', choice($.identifier, $.array_element)),
+      field('var_name', choice($.array_element, $.identifier)),
       '=',
       $._expression,
       ';'
@@ -129,13 +128,21 @@ module.exports = grammar({
       '(',
       $._expression,
       ')',
-      $.while_block
+      $.statement_block
     ),
 
-    while_block: $ => seq(
-      '{',
-      repeat($._statement),
-      '}'
+    if_statement: $ => seq(
+      'if',
+      '(',
+      $._expression,
+      ')',
+      $.statement_block,
+      optional($.else_statement)
+    ),
+
+    else_statement: $ => seq(
+      'else',
+      $.statement_block
     ),
 
     return_statement: $ => seq(
@@ -272,13 +279,13 @@ module.exports = grammar({
 
     multi_line_comment: $ => seq(
       '/*',
-      /[^(*\/)]*/,
+      /[^(*/)]*/,
       '*/'
     ),
 
     doc_string_comment: $ => seq(
       '/**',
-      /[^(*\/)]*/,
+      /[^(*/)]*/,
       '*/'
     )
   }
