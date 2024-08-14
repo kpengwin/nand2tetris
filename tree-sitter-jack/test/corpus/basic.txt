@@ -89,7 +89,7 @@ class Main {
       )
     (method_definition (type (identifier)) name: (identifier) (parameter_list)
       (statement_block
-        (let_statement (array_element array_name: (identifier) (identifier)))
+        (let_statement var_name: (identifier) subscript: (number) (number))
       )
     )
     )))

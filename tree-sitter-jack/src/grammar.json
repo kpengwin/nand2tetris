@@ -395,7 +395,7 @@
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "array_element"
+                "name": "_array_subscript"
               },
               {
                 "type": "SYMBOL",
@@ -610,7 +610,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "array_element"
+          "name": "_array_subscript"
         },
         {
           "type": "SYMBOL",
@@ -819,12 +819,30 @@
         }
       ]
     },
-    "array_element": {
-      "type": "IMMEDIATE_TOKEN",
-      "content": {
-        "type": "STRING",
-        "value": "]"
-      }
+    "_array_subscript": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "identifier"
+        },
+        {
+          "type": "STRING",
+          "value": "["
+        },
+        {
+          "type": "FIELD",
+          "name": "subscript",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_expression"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "]"
+        }
+      ]
     },
     "type": {
       "type": "CHOICE",

@@ -111,7 +111,7 @@ module.exports = grammar({
 
     let_statement: $ => seq(
       'let',
-      field('var_name', choice($.array_element, $.identifier)),
+      field('var_name', choice($._array_subscript, $.identifier)),
       '=',
       $._expression,
       ';'
@@ -162,7 +162,7 @@ module.exports = grammar({
       $.identifier,
       $.number,
       $.quoted_string,
-      $.array_element,
+      $._array_subscript,
       $.unary_expression,
       $.subroutine_call,
       $.parenthetical_expr,
@@ -216,11 +216,11 @@ module.exports = grammar({
       '='
     ),
 
-    array_element: $ => (
-      field('array_name', $.identifier),
-      token.immediate('['),
+    _array_subscript: $ => seq(
       $.identifier,
-      token.immediate(']')
+      '[',
+      field('subscript', $._expression),
+      ']'
     ),
 
     type: $ => choice(

@@ -21,7 +21,6 @@
 (method_definition name: (identifier) @function)
 
 (let_statement var_name: (identifier) @variable.parameter)
-(let_statement (array_element) @function)
 
 (variable_declaration var_name: (identifier) @variable.parameter)
 
@@ -62,4 +61,6 @@
   ")"
   "{"
   "}"
+  "["
+  "]"
 ] @punctuation.bracket
