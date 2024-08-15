@@ -1,0 +1,52 @@
+/** The player class */
+
+class Player {
+   field int location;
+
+   constructor Player new() {
+
+   return this;
+   }
+
+   method void drawSelf() {
+      do drawWingDown(10);
+
+      return;
+   }
+
+   method void drawWingDown(int location) {
+       var int memAddress; 
+       let memAddress = 16384+location;
+       // column 0
+       do Memory.poke(memAddress, 8160);
+       do Memory.poke(memAddress +32, 4380);
+       do Memory.poke(memAddress +64, 5378);
+       do Memory.poke(memAddress +96, 12545);
+       do Memory.poke(memAddress +128, 19978);
+       do Memory.poke(memAddress +160, 30724);
+       do Memory.poke(memAddress +192, -31614);
+       do Memory.poke(memAddress +224, 30786);
+       do Memory.poke(memAddress +256, 8242);
+       do Memory.poke(memAddress +288, 8142);
+       return;
+   }
+
+   method void drawWingUp(int location) {
+       var int memAddress; 
+       let memAddress = 16384+location;
+       // column 0
+       do Memory.poke(memAddress, 8160);
+       do Memory.poke(memAddress +32, 4380);
+       do Memory.poke(memAddress +64, 5378);
+       do Memory.poke(memAddress +96, 12558);
+       do Memory.poke(memAddress +128, 19969);
+       do Memory.poke(memAddress +160, 30723);
+       do Memory.poke(memAddress +192, -31610);
+       do Memory.poke(memAddress +224, 30840);
+       do Memory.poke(memAddress +256, 8224);
+       do Memory.poke(memAddress +288, 8128);
+       return;
+   }
+
+
+}

@@ -10,6 +10,9 @@
   "constructor"
   "function"
   "method"
+  "var"
+  "field"
+  "static"
 ] @keyword
 
 (class_definition class_name: (identifier) @constant)

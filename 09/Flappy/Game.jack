@@ -1,0 +1,22 @@
+/** Game loop controller */
+
+class Game {
+
+   constructor Game new() {
+
+      return this;
+   }
+
+   method void run() {
+      var Player player;
+      do player.drawSelf();
+
+      do run();
+      // Never happens
+      return;
+   }
+
+   
+}
+
+
