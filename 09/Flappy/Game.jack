@@ -2,16 +2,20 @@
 
 class Game {
 
+   field int score;
+   field Player player;
+
    constructor Game new() {
+      let score = 0;
 
       return this;
    }
 
    method void run() {
-      var Player player;
-      do player.drawSelf();
+      while (true) {
+         do player.drawSelf();
 
-      do run();
+      }
       // Never happens
       return;
    }

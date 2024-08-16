@@ -4,12 +4,13 @@ class Player {
    field int location;
 
    constructor Player new() {
-
+      let location = 0;
    return this;
    }
 
    method void drawSelf() {
-      do drawWingDown(10);
+      let location = location + 1;
+      do drawWingDown(location);
 
       return;
    }
