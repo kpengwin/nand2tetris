@@ -1,0 +1,12 @@
+class Main {
+    function void main() { 
+        var TestCase test;
+        let test = TestCase.new();
+        do Output.printString("Hello World");
+        do Output.println();
+        do Output.printInt(test.getIntTest());
+        do Output.println();
+        return;
+    }
+}
+

@@ -1,0 +1,13 @@
+class TestCase {
+    field int intTest;
+
+    constructor Main new() {
+        let intTest = 4;
+        return this;
+
+    }
+
+    method int getIntTest() {
+        return intTest;
+    }
+}
