@@ -2,16 +2,30 @@
 
 class Player {
    field int location;
+   field int wingStatus;
 
    constructor Player new() {
-      let location = 0;
+      let location = 4;
+      let wingStatus = 0;
    return this;
    }
 
    method void drawSelf() {
-      let location = location + 1;
-      do drawWingDown(location);
-
+      do Screen.clearScreen();
+      let location = location + 32;
+      if (location > (256*32)) {
+         let location = 4;
+      }
+      if (wingStatus < 4) {
+         do drawWingDown(location);
+         let wingStatus = wingStatus + 1;
+      } else {
+         do drawWingUp(location);
+         let wingStatus = wingStatus + 1;
+         if (wingStatus > 8) {
+            let wingStatus = 0;
+         }
+      }
       return;
    }
 
