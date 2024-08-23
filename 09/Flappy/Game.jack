@@ -13,9 +13,11 @@ class Game {
    }
 
    method void run() {
+      var int key;
       while (true) {
-         do player.drawSelf();
-         do Sys.wait(100);
+         let key = Keyboard.keyPressed();
+         do player.drawSelf(key);
+         do Sys.wait(50);
       }
       // Never happens
       return;

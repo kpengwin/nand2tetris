@@ -3,30 +3,40 @@
 class Player {
    field int location;
    field int wingStatus;
+   field int delta;
 
    constructor Player new() {
       let location = 4;
       let wingStatus = 0;
+      let delta = 0;
    return this;
    }
 
-   method void drawSelf() {
-      do Screen.clearScreen();
-      let location = location + 32;
-      if (location > (256*32)) {
+   method void drawSelf(int key) {
+      do clearSquare(location);
+      if (key = 0) {
+         let delta = delta + 1;
+      } else {
+         let delta = delta - 1;
+      }
+      let location = (location + (32 * delta));
+      if (location > (246*32)) {
          let location = 4;
       }
-      if (wingStatus < 4) {
-         do drawWingDown(location);
-         let wingStatus = wingStatus + 1;
-      } else {
+      if (delta > 0) {
          do drawWingUp(location);
-         let wingStatus = wingStatus + 1;
-         if (wingStatus > 8) {
-            let wingStatus = 0;
-         }
+      } else {
+         do drawWingDown(location);
       }
-      return;
+      if (delta > 10) {
+         let delta = 10;
+      }
+      if (delta < -10) {
+         let delta = -10;
+      }
+      //do Output.printInt(delta);
+      //do Output.moveCursor(0,0);
+     return;
    }
 
    method void drawWingDown(int location) {
@@ -63,5 +73,20 @@ class Player {
        return;
    }
 
-
+   method void clearSquare(int location) {
+       var int memAddress; 
+       let memAddress = 16384+location;
+       // column 0
+       do Memory.poke(memAddress, 0);
+       do Memory.poke(memAddress +32, 0);
+       do Memory.poke(memAddress +64, 0);
+       do Memory.poke(memAddress +96, 0);
+       do Memory.poke(memAddress +128, 0);
+       do Memory.poke(memAddress +160, 0);
+       do Memory.poke(memAddress +192, 0);
+       do Memory.poke(memAddress +224, 0);
+       do Memory.poke(memAddress +256, 0);
+       do Memory.poke(memAddress +288, 0);
+       return;
+   }
 }
