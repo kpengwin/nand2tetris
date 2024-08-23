@@ -1,0 +1,44 @@
+/* The pillars that can be collided with */
+
+class Pillar {
+   field int column;
+   field int gapStart;
+   field int gapEnd;
+
+   constructor Pillar new(int col, int start, int end) {
+      let column = col;
+      let gapStart = start;
+      let gapEnd = end;
+      return this;
+   }
+
+   method void drawSelf() {
+      var int row;
+      var int location;
+      let row = 0;
+      while (row < 25) {
+         let location = ((row*320)+column);
+         do Utility.clearSquare(location);
+         let row = row + 1;
+      }
+      let row = 0;
+
+      let column = column-1;
+      if (column = 0) {
+         let column = 31;
+      }
+
+      while (row < 25) {
+         let location = ((row*320)+column);
+         if ((row>gapStart)&(row<gapEnd)) {
+            do Utility.clearSquare(location);
+         } else {
+            do Utility.blackSquare(location);
+         }
+         let row = row + 1;
+      }
+
+      return;
+   }
+
+}

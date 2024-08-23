@@ -9,11 +9,11 @@ class Player {
       let location = 4;
       let wingStatus = 0;
       let delta = 0;
-   return this;
+      return this;
    }
 
    method void drawSelf(int key) {
-      do clearSquare(location);
+      do Utility.clearSquare(location);
       if (key = 0) {
          let delta = delta + 1;
       } else {
@@ -70,23 +70,6 @@ class Player {
        do Memory.poke(memAddress +224, 30840);
        do Memory.poke(memAddress +256, 8224);
        do Memory.poke(memAddress +288, 8128);
-       return;
-   }
-
-   method void clearSquare(int location) {
-       var int memAddress; 
-       let memAddress = 16384+location;
-       // column 0
-       do Memory.poke(memAddress, 0);
-       do Memory.poke(memAddress +32, 0);
-       do Memory.poke(memAddress +64, 0);
-       do Memory.poke(memAddress +96, 0);
-       do Memory.poke(memAddress +128, 0);
-       do Memory.poke(memAddress +160, 0);
-       do Memory.poke(memAddress +192, 0);
-       do Memory.poke(memAddress +224, 0);
-       do Memory.poke(memAddress +256, 0);
-       do Memory.poke(memAddress +288, 0);
        return;
    }
 }

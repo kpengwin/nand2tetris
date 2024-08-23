@@ -4,14 +4,14 @@ Flappy bird clone on hack computer
 
 ## Features
 
-- You are a bird
-- You can flap (with the keyboard)
-- Flapping makes you go up
-- Gravity makes you go down
+x You are a bird
+x You can flap (with the keyboard)
+x Flapping makes you go up
+x Gravity makes you go down
 - Game stops if you go off the top or bottom
-- There are pipes which form gaps
-- The pipe/gaps approach you
-- If you hit the pipes the game ends
+x There are pillars which form gaps
+x The pillar/gaps approach you
+- If you hit the pillars the game ends
 - The game adds one to your score if you pass a gap
 - The gaps get smaller on average as time goes down
 
@@ -25,5 +25,5 @@ Game class
 Player class
 - tracks own position, dimensions, momentum, movement
 
-Pipe class
+Pillar class
 - tracks own position, dimensions, movement
