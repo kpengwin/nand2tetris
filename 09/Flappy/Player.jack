@@ -12,6 +12,10 @@ class Player {
       return this;
    }
 
+   method int getLoc() {
+      return location;
+   }
+
    method void drawSelf(int key) {
       do Utility.clearSquare(location);
       if (key = 0) {

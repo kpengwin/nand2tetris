@@ -12,6 +12,10 @@ class Pillar {
       return this;
    }
 
+   method int getLoc() {
+      return column;
+   }
+
    method void drawSelf() {
       var int row;
       var int location;

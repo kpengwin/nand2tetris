@@ -5,12 +5,14 @@ class Game {
    field int score;
    field Player player;
    field Pillar pillarA, pillarB;
+   field String scoreString;
 
    constructor Game new() {
       let score = 0;
       let player = Player.new();
       let pillarA = Pillar.new(31,8,20);
       let pillarB = Pillar.new(18,3,15);
+      let scoreString = "Score: ";
 
       return this;
    }
@@ -27,8 +29,18 @@ class Game {
             let columnTick=0;
          }
          do player.drawSelf(key);
+         do Output.moveCursor(21,52);
+         do Output.printString(scoreString);
+         do Output.printInt(score);
          do Sys.wait(40);
          let columnTick=columnTick+1;
+
+         if (4 = pillarA.getLoc()) {
+            let score = score + 1;
+         }
+         if (4 = pillarB.getLoc()) {
+            let score = score + 1;
+         }
       }
       // Never happens
       return;
