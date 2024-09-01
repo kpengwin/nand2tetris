@@ -16,7 +16,13 @@ class Player {
       return location;
    }
 
-   method void drawSelf(int key) {
+   method int getBirdTop() {
+      
+   }
+
+   method int drawSelf(int key) {
+      var int continueGame;
+      let continueGame = 1;
       do Utility.clearSquare(location);
       if (key = 0) {
          let delta = delta + 1;
@@ -24,23 +30,24 @@ class Player {
          let delta = delta - 1;
       }
       let location = (location + (32 * delta));
-      if (location > (246*32)) {
-         let location = 4;
-      }
-      if (delta > 0) {
-         do drawWingUp(location);
+      // 246*32
+      if ((location > (7872)) | location < 4) {
+         let continueGame = 0;
       } else {
-         do drawWingDown(location);
+         if (delta > 0) {
+            do drawWingUp(location);
+         } else {
+            do drawWingDown(location);
+         }
+         if (delta > 10) {
+            let delta = 10;
+         }
+         if (delta < -10) {
+            let delta = -10;
+         }
       }
-      if (delta > 10) {
-         let delta = 10;
-      }
-      if (delta < -10) {
-         let delta = -10;
-      }
-      //do Output.printInt(delta);
-      //do Output.moveCursor(0,0);
-     return;
+
+     return continueGame;
    }
 
    method void drawWingDown(int location) {

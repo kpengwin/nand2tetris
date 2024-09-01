@@ -8,7 +8,7 @@ x You are a bird
 x You can flap (with the keyboard)
 x Flapping makes you go up
 x Gravity makes you go down
-- Game stops if you go off the top or bottom
+x Game stops if you go off the top or bottom
 x There are pillars which form gaps
 x The pillar/gaps approach you
 - If you hit the pillars the game ends

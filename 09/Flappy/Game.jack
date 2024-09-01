@@ -20,15 +20,17 @@ class Game {
    method void run() {
       var int key;
       var int columnTick;
-      let columnTick=10;
-      while (true) {
+      var int continue;
+      let columnTick = 10;
+      let continue = 1;
+      while (continue = 1) {
          let key = Keyboard.keyPressed();
          if (columnTick = 10) {
             do pillarA.drawSelf();
             do pillarB.drawSelf();
             let columnTick=0;
          }
-         do player.drawSelf(key);
+         let continue = player.drawSelf(key);
          do Output.moveCursor(21,52);
          do Output.printString(scoreString);
          do Output.printInt(score);
@@ -42,7 +44,9 @@ class Game {
             let score = score + 1;
          }
       }
-      // Never happens
+
+      do Output.moveCursor(12,25);
+      do Output.printString("Game Over");
       return;
    }
 
