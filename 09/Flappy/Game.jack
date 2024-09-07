@@ -17,10 +17,29 @@ class Game {
       return this;
    }
 
-   method void run() {
-      var int key;
-      var int columnTick;
+   function int checkCollision(int sHi, int sLo, int pHi) {
       var int continue;
+      let continue = 1;
+      if (sHi>pHi) {
+         let continue = 0;
+      }
+      if (sLo<pHi) {
+         let continue = 0;
+      }
+      if (continue = 0) {
+         do Output.moveCursor(2,40);
+         do Output.printInt(sHi);
+         do Output.moveCursor(3,40);
+         do Output.printInt(pHi);
+         do Output.moveCursor(4,40);
+         do Output.printInt(sLo);
+      }
+      return continue;
+   }
+
+   method void run() {
+      var int key, columnTick, continue;
+      var int pHi, sHi, sLo;
       let columnTick = 10;
       let continue = 1;
       while (continue = 1) {
@@ -31,6 +50,20 @@ class Game {
             let columnTick=0;
          }
          let continue = player.drawSelf(key);
+         if (continue = 1) {
+            if (pillarA.getLoc() = 4) {
+               let sHi = pillarA.getSafeTop();
+               let sLo = pillarA.getSafeBottom();
+               let pHi = player.getBirdTop();
+               let continue = Game.checkCollision(sHi,sLo,pHi);
+            }
+            if (pillarB.getLoc() = 4) {
+               let sHi = pillarB.getSafeTop();
+               let sLo = pillarB.getSafeBottom();
+               let pHi = player.getBirdTop();
+               let continue = Game.checkCollision(sHi,sLo,pHi);
+            }
+         }
          do Output.moveCursor(21,52);
          do Output.printString(scoreString);
          do Output.printInt(score);

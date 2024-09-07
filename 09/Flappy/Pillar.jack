@@ -16,6 +16,14 @@ class Pillar {
       return column;
    }
 
+   method int getSafeTop() {
+      return gapStart*10;
+   }
+
+   method int getSafeBottom() {
+      return ((gapEnd-1)*10);
+   }
+
    method void drawSelf() {
       var int row;
       var int location;

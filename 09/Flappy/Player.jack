@@ -17,7 +17,7 @@ class Player {
    }
 
    method int getBirdTop() {
-      
+      return ((location - 4)/32);
    }
 
    method int drawSelf(int key) {
