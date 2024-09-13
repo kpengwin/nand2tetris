@@ -2,23 +2,23 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct ll_node {
+typedef struct snode {
 	char* field;
-	struct ll_node *next;
-} s_node;
+	struct snode *next;
+} snode;
 
-typedef struct s_list {
-	s_node* head;
-	s_node* tail;
+typedef struct sllist {
+	snode* head;
+	snode* tail;
 	int len;
 } sllist;
 
 // Create a new node with string f_content
-s_node* ll_mknode(char* f_content) {
+snode* ll_mknode(char* f_content) {
 	size_t len = strlen(f_content);
 	char* s_copy = malloc(len+1);
 	strncpy(s_copy, f_content, len);
-	s_node* nnode = malloc(sizeof(s_node));
+	snode* nnode = malloc(sizeof(snode));
 	nnode->field = s_copy;
 	nnode->next = NULL;
 	return nnode;
@@ -35,7 +35,7 @@ sllist* sll_create() {
 }
 
 void sll_append(sllist* list, char* f_content) {
-	s_node* node = ll_mknode(f_content);
+	snode* node = ll_mknode(f_content);
 	if (list->head == NULL) {
 		list->head = node;
 	}
@@ -48,12 +48,16 @@ void sll_append(sllist* list, char* f_content) {
 	list->len += 1;
 }
 
-void printList(s_node* head) {
-	s_node* mark;
+void printList(snode* head) {
+	snode* mark;
 	mark = head;
 	printf("[");
 	while (mark != NULL) {
-		printf("'%s', ", mark->field);
+		if (mark->next == NULL) {
+			printf("'%s'", mark->field);
+		} else {
+			printf("'%s', ", mark->field);
+		}
 		mark = mark->next; 
 	}
 	printf("]\n");
