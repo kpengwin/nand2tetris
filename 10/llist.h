@@ -1,4 +1,4 @@
-#ifndef llist_structs
+#ifndef llist_h
 typedef struct snode {
 	char* field;
 	struct snode *next;
@@ -9,9 +9,6 @@ typedef struct sllist {
 	snode* tail;
 	int len;
 } sllist;
-#define llist_structs
-#endif
-
 // Create a new node with string f_content
 snode* ll_mknode(char* f_content);
 
@@ -20,4 +17,8 @@ sllist* sll_create();
 void sll_append(sllist* list, char* f_content) ;
 void printList(snode* head) ;
 void sll_print(sllist* list) ;
+
+#define llist_h
+#endif
+
 
