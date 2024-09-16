@@ -6,7 +6,7 @@
 // Create a new node with string f_content
 snode* ll_mknode(char* f_content) {
 	size_t len = strlen(f_content);
-	char* s_copy = malloc(len+1);
+	char* s_copy = calloc(len+1, sizeof(char)); //init mem to 0
 	strncpy(s_copy, f_content, len);
 	snode* nnode = malloc(sizeof(snode));
 	nnode->field = s_copy;
@@ -38,7 +38,7 @@ void sll_append(sllist* list, char* f_content) {
 	list->len += 1;
 }
 
-void printList(snode* head) {
+void sll_printfromnode(snode* head) {
 	snode* mark;
 	mark = head;
 	printf("[");
@@ -53,7 +53,19 @@ void printList(snode* head) {
 	printf("]\n");
 }
 
+void sll_dfree(sllist* list) {
+	snode* tmp;
+	while (list->head != NULL) {
+		tmp = list->head;
+		if (tmp->field)
+			free(tmp->field);
+		list->head = tmp->next;
+		free(tmp);
+	}
+	free(list);
+}
+
 void sll_print(sllist* list) {
-	printList(list->head);
+	sll_printfromnode(list->head);
 }
 
