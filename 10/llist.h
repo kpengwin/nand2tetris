@@ -18,6 +18,7 @@ void sll_append(sllist* list, char* f_content) ;
 void sll_printfromnode(snode* head) ;
 void sll_print(sllist* list) ;
 void sll_dfree(sllist* list) ;
+void sll_rawprint(sllist* list, int with_cr) ;
 
 #define llist_h
 #endif

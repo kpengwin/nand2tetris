@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <argp.h>
 #include "llist.h"
 
@@ -10,41 +11,39 @@ static char doc[] =
 	"jack-compy -- compile jack code to hack asm";
 
 static char args_doc[] =
-	"";
+	"JACK_FILE";
 
 static struct argp_option options[] = {
-	{"file", 'f', "FILE", 0, "File to compile"},
+	{"file", 'o', "FILE", 0, "Output filename"},
 	{0}
 };
 
 struct arguments
 {
-	char *file;
+	char *ifile;
+	char *ofile;
 };
 
 static error_t parse_opt (int key, char* arg, struct argp_state *state) {
 	struct arguments *arguments = state->input;
 
-	/*printf("key %d\n", key);*/
-
 	switch (key) {
 		case 'f':
-			/*printf("arg_num %d arg %s\n", state->arg_num, arg);*/
-			arguments->file = arg;
+			arguments->ofile = arg;
 			break;
 		case ARGP_KEY_ARG:
-			if (state->arg_num > 2) {
-				/*printf("too many args arg_num %d\n", state->arg_num);*/
+			if (state->arg_num >= 2) {
 				argp_usage (state);
+			} else {
+				arguments->ifile = arg;
 			}
-			//may need to put this on arguments?
 			break;
-		/*case ARGP_KEY_END: //Copied this from example but it doesn't seem to be correct
+		case ARGP_KEY_END:
 			if (state->arg_num < 1) {
 				printf("not enough args arg_num %d\n", state->arg_num);
 				argp_usage(state);
 			}
-			break;*/
+			break;
 		default:
 			return ARGP_ERR_UNKNOWN;
 	}
@@ -54,23 +53,31 @@ static error_t parse_opt (int key, char* arg, struct argp_state *state) {
 
 static struct argp argp = { options, parse_opt, args_doc, doc };
 
-int stripline(char * line, int * start, int * end) {
+char *stripline(char * line) {
 	int success=0;
-	int buf=0;
-	*start=0;
-	*end=0;
+	int start=0;
+	int end=0;
+	char *result;
 
 	for(int i=0;line[i]!=0; i++) {
 		if (success==0) {
-			if ((line[i]==' ')) {
+			if ((line[i]!=' ') && (line[i]!='\t') && (line[i]!='\n')) {
 				success=1;
+			} else {
+				start++;
 			}
-			(*start)++;
 		}
-		(*end)++;
+		end++;
 	}
-
-	return success;
+	if (success) {
+		for(int i=end-1;((line[i]=='\n')||(line[i]==' ')||(line[i]=='\t'));i--) {
+			end--;
+		}
+		int nlen = (end-start)+1;
+		result = calloc(nlen, sizeof(char));
+		strncpy(result,line+start, nlen-1);
+	}
+	return success ? result : NULL;
 }
 
 int main(int argc, char**argv) {
@@ -81,24 +88,29 @@ int main(int argc, char**argv) {
 	ssize_t read;
 	sllist* lines = sll_create();
 	struct arguments arguments;
-	arguments.file = "./main.c";
+	arguments.ifile = "-";
+	arguments.ofile = "-";
 
 	argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
-	fp = fopen(arguments.file, "r");
+	printf("Running jack compiler with in_file:[%s] out_file:[%s]\n",
+		arguments.ifile,
+		arguments.ofile);
+	fp = fopen(arguments.ifile, "r");
 	if (fp==NULL) {
 		return 1;
 	}
 
 	while ((read = getline(&line, &len, fp)) != -1) {
-		int start, end;
-		if (stripline(line, &start, &end)) {
-			line[end-1] = 0;
-			sll_append(lines, line+start);
+		char * sstring;
+		if ((sstring=stripline(line))) {
+			sll_append(lines, sstring);
+			free(sstring);
 		}
 	}
 
 	sll_print(lines);
+	sll_rawprint(lines, 1);
 
 	fclose(fp);
 

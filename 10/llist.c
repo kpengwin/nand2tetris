@@ -69,3 +69,11 @@ void sll_print(sllist* list) {
 	sll_printfromnode(list->head);
 }
 
+void sll_rawprint(sllist* list, int with_cr) {
+	snode* mark=list->head;
+	for (int i=0;i<list->len;i++) {
+		printf("%s%s", mark->field, with_cr ? "\n" : "");
+		mark=mark->next;
+	}
+}
+
