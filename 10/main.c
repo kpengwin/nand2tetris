@@ -10,7 +10,7 @@ static char doc[] =
 	"jack-compy -- compile jack code to hack asm";
 
 static char args_doc[] =
-	"TARGET_FILE";
+	"";
 
 static struct argp_option options[] = {
 	{"file", 'f', "FILE", 0, "File to compile"},
@@ -54,6 +54,25 @@ static error_t parse_opt (int key, char* arg, struct argp_state *state) {
 
 static struct argp argp = { options, parse_opt, args_doc, doc };
 
+int stripline(char * line, int * start, int * end) {
+	int success=0;
+	int buf=0;
+	*start=0;
+	*end=0;
+
+	for(int i=0;line[i]!=0; i++) {
+		if (success==0) {
+			if ((line[i]==' ')) {
+				success=1;
+			}
+			(*start)++;
+		}
+		(*end)++;
+	}
+
+	return success;
+}
+
 int main(int argc, char**argv) {
 
 	FILE * fp;
@@ -72,7 +91,11 @@ int main(int argc, char**argv) {
 	}
 
 	while ((read = getline(&line, &len, fp)) != -1) {
-		sll_append(lines, line);
+		int start, end;
+		if (stripline(line, &start, &end)) {
+			line[end-1] = 0;
+			sll_append(lines, line+start);
+		}
 	}
 
 	sll_print(lines);
