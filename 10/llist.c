@@ -38,6 +38,48 @@ void sll_append(sllist* list, char* f_content) {
 	list->len += 1;
 }
 
+int sll_insertatindex(sllist* list, char* content, int index) {
+	if ( (index>list->len) || (index < 0) ) {
+		return -1; // ERR index too big
+	} // Don't traverse the list if we know it won't work
+	
+	snode *cur, *prev;
+	for (cur=list->head, prev=NULL; index ; index--, prev=cur, cur=cur->next) {
+		if (cur == NULL)
+			return -1; //We hit the end
+	}
+	snode* nnode = ll_mknode(content);
+	nnode->next = cur;
+	if (prev)
+		prev->next = nnode;
+	else
+		list->head = nnode;
+	list->len++;
+
+	return 0; //success
+}
+
+int sll_deleteatindex(sllist* list, int index) {
+	if ( (index>(list->len - 1)) || (index < 0) ) {
+		return -1; // ERR index too big
+	} // Don't traverse the list if we know it won't work
+	
+	snode *cur, *prev;
+	for (cur=list->head, prev=NULL; index ; index--, prev=cur, cur=cur->next) {
+		if (cur == NULL)
+			return -1; //We hit the end
+	}
+
+	if (prev)
+		prev->next = cur->next;
+	else
+		list->head = cur->next;
+	list->len--;
+	free(cur->field);
+	free(cur);
+	return 0; //success
+}
+
 void sll_printfromnode(snode* head) {
 	snode* mark;
 	mark = head;
