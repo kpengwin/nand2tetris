@@ -24,6 +24,10 @@ struct arguments
 	char *ofile;
 };
 
+int char_is_whitespace(char c) {
+	return ((c == '\n') || (c == ' ') || (c == '\t'));
+}
+
 static error_t parse_opt (int key, char* arg, struct argp_state *state) {
 	struct arguments *arguments = state->input;
 
@@ -32,7 +36,7 @@ static error_t parse_opt (int key, char* arg, struct argp_state *state) {
 			arguments->ofile = arg;
 			break;
 		case ARGP_KEY_ARG:
-			if (state->arg_num >= 2) {
+			if (state->arg_num >= 1) {
 				argp_usage (state);
 			} else {
 				arguments->ifile = arg;
@@ -40,14 +44,12 @@ static error_t parse_opt (int key, char* arg, struct argp_state *state) {
 			break;
 		case ARGP_KEY_END:
 			if (state->arg_num < 1) {
-				printf("not enough args arg_num %d\n", state->arg_num);
 				argp_usage(state);
 			}
 			break;
 		default:
 			return ARGP_ERR_UNKNOWN;
 	}
-	/*printf("finished switch\n");*/
 	return 0;
 }
 
@@ -60,8 +62,8 @@ char *stripline(char * line) {
 	char *result;
 
 	for(int i=0;line[i]!=0; i++) {
-		if (success==0) {
-			if ((line[i]!=' ') && (line[i]!='\t') && (line[i]!='\n')) {
+		if (!success) {
+			if (!char_is_whitespace(line[i])) {
 				success=1;
 			} else {
 				start++;
@@ -70,7 +72,7 @@ char *stripline(char * line) {
 		end++;
 	}
 	if (success) {
-		for(int i=end-1;((line[i]=='\n')||(line[i]==' ')||(line[i]=='\t'));i--) {
+		for(int i=end-1;char_is_whitespace(line[i]);i--) {
 			end--;
 		}
 		int nlen = (end-start)+1;
@@ -79,6 +81,7 @@ char *stripline(char * line) {
 	}
 	return success ? result : NULL;
 }
+
 
 int main(int argc, char**argv) {
 
@@ -98,6 +101,7 @@ int main(int argc, char**argv) {
 		arguments.ofile);
 	fp = fopen(arguments.ifile, "r");
 	if (fp==NULL) {
+		printf("Error opening file [%s]\n", arguments.ifile);
 		return 1;
 	}
 
