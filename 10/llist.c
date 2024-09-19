@@ -38,6 +38,14 @@ void sll_append(sllist* list, char* f_content) {
 	list->len += 1;
 }
 
+char* sll_getindex(sllist* list, int index) {
+	snode *mark = list->head;
+	for (;index>0;index--) {
+		mark = mark->next;
+	}
+	return mark->field;
+}
+
 int sll_insertatindex(sllist* list, char* content, int index) {
 	if ( (index>list->len) || (index < 0) ) {
 		return -1; // ERR index too big

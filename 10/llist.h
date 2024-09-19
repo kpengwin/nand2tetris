@@ -15,6 +15,7 @@ snode* ll_mknode(char* f_content) ;
 //sllist operations: create, append, remove
 sllist* sll_create() ;
 void sll_append(sllist* list, char* f_content) ;
+char* sll_getindex(sllist* list, int index) ;
 int sll_insertatindex(sllist* list, char* content, int index) ;
 int sll_deleteatindex(sllist* list, int index) ;
 void sll_printfromnode(snode* head) ;

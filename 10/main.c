@@ -82,6 +82,40 @@ char *stripline(char * line) {
 	return success ? result : NULL;
 }
 
+int char_is_token_breaker(char c) {
+	return ((c == ';') || (c == '(') || (c == '{'));
+}
+
+sllist* parse_to_tokens(char *line) {
+	printf("Tokenizing [%s]\n", line);
+	sllist * tlist = sll_create();
+	char buffer[512];
+	int i=0;
+	// Flags for state machine
+	/*int f_onechar=0;
+	int f_inquotes=0;*/
+	while (*line) {
+		if (char_is_whitespace(*line)) {
+			buffer[i]=0;
+			sll_append(tlist, buffer);
+			i=0;
+		} else if (char_is_token_breaker(*line)) {
+			buffer[i]=0;
+			sll_append(tlist,buffer);
+			buffer[0]=*line;
+			i=1;
+		}
+		else {
+			buffer[i]=*line;
+			i++;
+		}
+		line++;
+	}
+	buffer[i]=0;
+	sll_append(tlist, buffer);
+
+	return tlist;
+}
 
 int main(int argc, char**argv) {
 
@@ -115,6 +149,12 @@ int main(int argc, char**argv) {
 
 	sll_print(lines);
 	sll_rawprint(lines, 1);
+
+	int l = 6;
+	printf("Testing the token parser on line [%d]\n", l);
+	sllist* tokentest = parse_to_tokens(sll_getindex(lines, l));
+	sll_print(tokentest);
+
 
 	fclose(fp);
 

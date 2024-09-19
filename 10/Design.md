@@ -13,7 +13,7 @@ Write the compiler in C as a learning project.
 
 1. Implement a usable linked-list type for strings [done]
 2. Implement a more ergonomic rich linked list (keeping place, insert either end, len, etc) [good enough]
-    a. TODO: remove individual node 
+    a. insert/remove individual node [done]
 3. Get it working to parse the file into the list [done]
 4. Create tokenizer
 5. Implement the tree type to hold the AST
