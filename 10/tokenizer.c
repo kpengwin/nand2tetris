@@ -8,35 +8,35 @@ typedef struct codellist {
 } codelist;
 
 enum TOKEN_TYPE {
-	KEYWORD,
-	SYMBOL,
-	IDENTIFIER,
-	INT_CONST,
-	STRING_CONST
+	T_KEYWORD,
+	T_SYMBOL,
+	T_IDENTIFIER,
+	T_INT_CONST,
+	T_STRING_CONST
 };
 
 enum KEYWORD {
 	K_CLASS,
-	METHOD,
-	FUNCTION,
-	CONSTRUCTOR,
-	INT,
-	BOOLEAN,
-	CHAR,
-	VOID,
-	VAR,
-	STATIC,
-	FIELD,
-	LET,
-	DO,
-	IF,
-	ELSE,
-	WHILE,
-	RETURN,
-	TRUE,
-	FALSE,
-	NULL,
-	THIS
+	K_METHOD,
+	K_FUNCTION,
+	K_CONSTRUCTOR,
+	K_INT,
+	K_BOOLEAN,
+	K_CHAR,
+	K_VOID,
+	K_VAR,
+	K_STATIC,
+	K_FIELD,
+	K_LET,
+	K_DO,
+	K_IF,
+	K_ELSE,
+	K_WHILE,
+	K_RETURN,
+	K_TRUE,
+	K_FALSE,
+	K_NULL,
+	K_THIS
 };
 
 static char cur_token[512] = "";
@@ -51,37 +51,56 @@ void advance(codelist *c) {
 }
 
 /* Returns the type of the current token */
-enum TOKEN_TYPE tokenType(codeilist *c) {
+enum TOKEN_TYPE tokenType(codelist *c) {
 
 }
 
 /* returns which keyword corresponds to the current token */
 enum KEYWORD keyword() {
-	switch (cur_token) {
-	case "class";	
-		return CLASS;
-		return METHOD;
-		return FUNCTION;
-		return CONSTRUCTOR;
-		return INT;
-		return BOOLEAN;
-		return CHAR;
-		return VOID;
-		return VAR;
-		return STATIC;
-		return FIELD;
-		return LET;
-		return DO;
-		return IF;
-		return ELSE;
-		return WHILE;
-		return RETURN;
-		return TRUE;
-		return FALSE;
-		return NULL;
-		return THIS;
-
-	}
+	if (strcmp(cur_token, "class") == 0)
+		return K_CLASS;
+	else if (strcmp(cur_token, "method") == 0)
+		return K_METHOD;
+	else if (strcmp(cur_token, "function") == 0)
+		return K_FUNCTION;
+	else if (strcmp(cur_token, "constructor") == 0)
+		return K_CONSTRUCTOR;
+	else if (strcmp(cur_token, "int") == 0)
+		return K_INT;
+	else if (strcmp(cur_token, "boolean") == 0)
+		return K_BOOLEAN;
+	else if (strcmp(cur_token, "char") == 0)
+		return K_CHAR;
+	else if (strcmp(cur_token, "void") == 0)
+		return K_VOID;
+	else if (strcmp(cur_token, "var") == 0)
+		return K_VAR;
+	else if (strcmp(cur_token, "static") == 0)
+		return K_STATIC;
+	else if (strcmp(cur_token, "field") == 0)
+		return K_FIELD;
+	else if (strcmp(cur_token, "let") == 0)
+		return K_LET;
+	else if (strcmp(cur_token, "do") == 0)
+		return K_DO;
+	else if (strcmp(cur_token, "if") == 0)
+		return K_IF;
+	else if (strcmp(cur_token, "else") == 0)
+		return K_ELSE;
+	else if (strcmp(cur_token, "while") == 0)
+		return K_WHILE;
+	else if (strcmp(cur_token, "return") == 0)
+		return K_RETURN;
+	else if (strcmp(cur_token, "true") == 0)
+		return K_TRUE;
+	else if (strcmp(cur_token, "false") == 0)
+		return K_FALSE;
+	else if (strcmp(cur_token, "null") == 0)
+		return K_NULL;
+	else if (strcmp(cur_token, "this") == 0)
+		return K_THIS;
+	else
+		return -1;
 
 }
 
