@@ -11,7 +11,7 @@ x Gravity makes you go down
 x Game stops if you go off the top or bottom
 x There are pillars which form gaps
 x The pillar/gaps approach you
-- If you hit the pillars the game ends
+x If you hit the pillars the game ends
 x The game adds ten to your score if you pass a gap
 - The gaps get smaller on average as time goes down
 
