@@ -16,6 +16,7 @@ enum TOKEN_TYPE {
 };
 
 enum KEYWORD {
+	K_ERR,    // Not a keyword, is an error
 	K_CLASS,
 	K_METHOD,
 	K_FUNCTION,
@@ -39,6 +40,11 @@ enum KEYWORD {
 	K_THIS
 };
 
+char SYMBOLS[] = "{}()[].,;+-*/&|<>=~";
+int SYM_COUNT = strlen(SYMBOLS);
+
+int STR_LITERAL = 0;
+
 static char cur_token[512] = "";
 
 /* True if there are more tokens */
@@ -47,12 +53,32 @@ int hasMoreTokens(codelist *c) {
 }
 /* Advance to the next token */
 void advance(codelist *c) {
+	STR_LITERAL = 0;
 	
 }
 
 /* Returns the type of the current token */
 enum TOKEN_TYPE tokenType(codelist *c) {
+	// Check for valid keyword
+	if (keyword())
+		return T_KEYWORD;
 
+	// Check if matches a symbol
+	for (int i=0;i<SYM_COUNT;i++) {
+		if (SYMBOLS[i]==cur_token[0])
+			return T_SYMBOL;
+	}
+
+	// Check if it starts with a number
+	if (SYMBOLS[0] >= "0" && SYMBOLS[0] <= "9")
+		return T_INT_CONST;
+
+	// Check if STR_LITERAL flag set
+	if (STR_LITERAL)
+		return T_STRING_CONST;
+
+	// By default, it's an identifier
+	return T_IDENTIFIER;
 }
 
 /* returns which keyword corresponds to the current token */
@@ -100,7 +126,7 @@ enum KEYWORD keyword() {
 	else if (strcmp(cur_token, "this") == 0)
 		return K_THIS;
 	else
-		return -1;
+		return K_ERR;
 
 }
 
