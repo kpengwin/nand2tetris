@@ -1,45 +1,10 @@
-#include <stdlib.c>
+// External Includes
+#include <stdlib.h>
+#include <string.h>
+
+// Project Includes
 #include "llist.h"
-
-typedef struct codellist {
-	llist source;
-	snode line;
-	char* pos;
-} codelist;
-
-enum TOKEN_TYPE {
-	T_NULL,
-	T_KEYWORD,
-	T_SYMBOL,
-	T_IDENTIFIER,
-	T_INT_CONST,
-	T_STRING_CONST
-};
-
-enum KEYWORD {
-	K_ERR,    // Not a keyword, is an error
-	K_CLASS,
-	K_METHOD,
-	K_FUNCTION,
-	K_CONSTRUCTOR,
-	K_INT,
-	K_BOOLEAN,
-	K_CHAR,
-	K_VOID,
-	K_VAR,
-	K_STATIC,
-	K_FIELD,
-	K_LET,
-	K_DO,
-	K_IF,
-	K_ELSE,
-	K_WHILE,
-	K_RETURN,
-	K_TRUE,
-	K_FALSE,
-	K_NULL,
-	K_THIS
-};
+#include "tokenizer.h"
 
 char SYMBOLS[] = "{}()[].,;+-*/&|<>=~";
 int SYM_COUNT = strlen(SYMBOLS);
