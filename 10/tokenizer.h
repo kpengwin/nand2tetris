@@ -3,7 +3,7 @@
 
 typedef struct codellist {
 	sllist source;
-	snode line;
+	snode* line;
 	char* pos;
 } codelist;
 
@@ -40,6 +40,9 @@ enum KEYWORD {
 	K_NULL,
 	K_THIS
 };
+
+// must call before using tokenizer
+void init_tokenizer() ;
 
 /* True if there are more tokens */
 int hasMoreTokens(codelist *c) ;

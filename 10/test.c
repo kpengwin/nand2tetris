@@ -10,5 +10,7 @@
 int main(int argc, char**argv) {
 	printf("===\nBEGIN TEST OUTPUT\n===");
 
+	init_tokenizer();
+
 	return 0;
 }

@@ -7,7 +7,7 @@
 #include "tokenizer.h"
 
 char SYMBOLS[] = "{}()[].,;+-*/&|<>=~";
-int SYM_COUNT = strlen(SYMBOLS);
+int SYM_COUNT = 0;
 
 int STR_LITERAL = 0;
 
@@ -15,7 +15,7 @@ static char cur_token[512] = "";
 
 /* True if there are more tokens */
 int hasMoreTokens(codelist *c) {
-	return (c->pos || c->line);
+	return ((c->pos != NULL) || (c->line != NULL));
 }
 
 int char_is_whitespace(char c) {
@@ -38,20 +38,23 @@ int char_is_alphabet(char c) {
 	return (((c >= 'a') && (c <= 'z')) || ((c >= 'A') && (c <= 'Z')));
 }
 
+void init_tokenizer() {
+	SYM_COUNT = strlen(SYMBOLS);
+}
 
 /* Advance to the next token */
 void advance(codelist *c) {
 	STR_LITERAL = 0;
-	cur_token[0] = NULL;
+	cur_token[0] = 0;
 
 
 	// Move past any whitespace
-	while (char_is_whitespace(c->pos)) {
+	while (char_is_whitespace(*(c->pos))) {
 		c->pos++;
 		if (c->pos == NULL) {
 			if (hasMoreTokens(c)) {
 				c->line = c->line->next;
-				c->pos = c->line->field[0]
+				c->pos = &(c->line->field[0]);
 			} else {
 				return;
 			}
@@ -61,20 +64,20 @@ void advance(codelist *c) {
 	// Symbols are 1 char
 	if (char_is_symbol(*(c->pos))){
 		cur_token[0] = *(c->pos);
-		cur_token[1] = NULL;
+		cur_token[1] = 0;
 		c->pos++;
 		return;
 	}
 
 	// Ints are uninterupted string of ints
 	if (char_is_int(*(c->pos))){
-		int i=0
+		int i=0;
 		do {
 			cur_token[i] = *(c->pos);
 			i++;
 			c->pos++;
-		} while(char_is_int(*(c->pos)))
-		cur_token[i]=NULL;
+		} while(char_is_int(*(c->pos)));
+		cur_token[i]=0;
 		return;
 	}
 
@@ -88,9 +91,9 @@ void advance(codelist *c) {
 			c->pos++;
 		}
 		c->pos++; //move past closing '"'
-		cur_token[i]=NULL;
+		cur_token[i]=0;
 		STR_LITERAL = 1; // Flag set
-		return
+		return;
 	}
 
 	// Otherwise it should be either a keyword or an identifier, either is copied literally
@@ -102,7 +105,7 @@ void advance(codelist *c) {
 			c->pos++;
 		}
 		c->pos++;
-		cur_token[i]=NULL;
+		cur_token[i]=0;
 		return;
 	}
 
@@ -189,7 +192,7 @@ enum KEYWORD keyword() {
 
 /* returns the character of the current token */
 char symbol() {
-	return *cur_token[0];
+	return cur_token[0];
 }
 
 
