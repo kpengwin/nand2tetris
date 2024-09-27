@@ -11,7 +11,7 @@ int SYM_COUNT = 0;
 
 int STR_LITERAL = 0;
 
-static char cur_token[512] = "";
+char cur_token[512] = "";
 
 /* True if there are more tokens */
 int hasMoreTokens(codelist *c) {
@@ -47,18 +47,19 @@ void advance(codelist *c) {
 	STR_LITERAL = 0;
 	cur_token[0] = 0;
 
-
 	// Move past any whitespace
-	while (char_is_whitespace(*(c->pos))) {
-		c->pos++;
-		if (c->pos == NULL) {
+	while (char_is_whitespace(*(c->pos)) || ((*c->pos) == 0)) {
+		if ((*c->pos) == 0) {
 			if (hasMoreTokens(c)) {
 				c->line = c->line->next;
 				c->pos = &(c->line->field[0]);
 			} else {
 				return;
 			}
+		} else {
+			c->pos++;
 		}
+
 	}
 
 	// Symbols are 1 char
@@ -104,7 +105,6 @@ void advance(codelist *c) {
 			i++;
 			c->pos++;
 		}
-		c->pos++;
 		cur_token[i]=0;
 		return;
 	}
@@ -113,7 +113,7 @@ void advance(codelist *c) {
 }
 
 /* Returns the type of the current token */
-enum TOKEN_TYPE tokenType(codelist *c) {
+enum TOKEN_TYPE tokenType(void) {
 
 	// Check if we actually have no token left
 	if (cur_token[0] == 0) {

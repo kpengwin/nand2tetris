@@ -41,8 +41,11 @@ enum KEYWORD {
 	K_THIS
 };
 
+extern char cur_token[512];
+extern int  STR_LITERAL;
+
 // must call before using tokenizer
-void init_tokenizer() ;
+void init_tokenizer(void) ;
 
 /* True if there are more tokens */
 int hasMoreTokens(codelist *c) ;
@@ -60,26 +63,26 @@ int char_is_alphabet(char c) ;
 void advance(codelist *c) ;
 
 /* Returns the type of the current token */
-enum TOKEN_TYPE tokenType(codelist *c) ;
+enum TOKEN_TYPE tokenType(void) ;
 
 /* returns which keyword corresponds to the current token */
-enum KEYWORD keyword() ;
+enum KEYWORD keyword(void) ;
 
 
 /* returns the character of the current token */
-char symbol() ;
+char symbol(void) ;
 
 
 /* returns the string of the current token 
  * MUST FREE AFTER USE */
-char* identifier() ;
+char* identifier(void) ;
 
 /* returns the integer value of the current token */
-int intVal() ;
+int intVal(void) ;
 
 /* returns the string value of the current token
 * without opening and closing double quotes */
-char * stringVal() ;
+char * stringVal(void) ;
 #define tokenizer_h
 #endif
 
