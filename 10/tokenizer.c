@@ -1,6 +1,7 @@
 // External Includes
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 // Project Includes
 #include "llist.h"
@@ -46,19 +47,48 @@ void init_tokenizer() {
 void advance(codelist *c) {
 	STR_LITERAL = 0;
 	cur_token[0] = 0;
-
-	// Move past any whitespace
-	// TODO: Also move past comments
-	while (char_is_whitespace(*(c->pos)) || ((*c->pos) == 0)) {
-		if ((*c->pos) == 0) {
-			if (hasMoreTokens(c)) {
-				c->line = c->line->next;
-				c->pos = &(c->line->field[0]);
+	int PAST_COMMENTS_AND_WHITESPACE = 0;
+	
+	while (!PAST_COMMENTS_AND_WHITESPACE) {
+		// Move past any whitespace
+		while (char_is_whitespace(*(c->pos)) || ((*c->pos) == 0)) {
+			if ((*c->pos) == 0) {
+				if (hasMoreTokens(c)) {
+					c->line = c->line->next;
+					c->pos = &(c->line->field[0]);
+				} else {
+					return;
+				}
 			} else {
-				return;
+				c->pos++;
 			}
-		} else {
-			c->pos++;
+
+		}
+
+		if ((*(c->pos) == '/') &&  (*(c->pos + 1) == '*')) { //Multiline
+			int IN_MULTILINE_COMMENT = 1;
+			c->pos = c->pos + 2;
+			while (IN_MULTILINE_COMMENT) {
+				if (*(c->pos) == 0) {
+					if (hasMoreTokens(c)) {
+						c->line = c->line->next;
+						c->pos = &(c->line->field[0]);
+					} else {
+						return;
+					}
+				} else if ((*(c->pos) == '*') && (*(c->pos+1) == '/')) {
+					c->pos = c->pos + 2;
+					IN_MULTILINE_COMMENT=0;
+				} else {
+					c->pos++;
+				}
+			}
+		} else if ((*(c->pos) == '/') && (*(c->pos + 1) == '/')) { //Single line
+			c->line = c->line->next;
+			c->pos = &(c->line->field[0]);
+		} else { //presumably we're at something that's not a comment
+			if (hasMoreTokens(c))
+				PAST_COMMENTS_AND_WHITESPACE = 1;
 		}
 
 	}

@@ -177,3 +177,27 @@ TEST(token_tests, token_parse_lines) {
 	EXPECT_EQ(tokenType(), T_INT_CONST);
 	printf("<INT_CONST>%d</INT_CONST>\n", intVal());
 }
+
+TEST(token_tests, token_parse_lines_with_comments) {
+	sllist *test_code = sll_create();
+	//not supposed to be valid syntax
+	sll_append(test_code, "// Test comment");
+	sll_append(test_code, "-");
+	sll_append(test_code, "/* begin multiline comment");
+	sll_append(test_code, "end multiline comment */");
+	sll_append(test_code, "//another comment just to screw with things");
+	sll_append(test_code, "23444");
+	struct codellist test_code_list;
+	test_code_list.source = *test_code;
+	test_code_list.line = test_code_list.source.head;
+	test_code_list.pos = &(test_code_list.line->field[0]);
+	EXPECT_EQ(*test_code_list.pos, '/');
+
+	advance(&test_code_list);
+	EXPECT_EQ(tokenType(), T_SYMBOL);
+	printf("<SYMBOL>%c</SYMBOL>\n", symbol());
+
+	advance(&test_code_list);
+	EXPECT_EQ(tokenType(), T_INT_CONST);
+	printf("<INT_CONST>%d</INT_CONST>\n", intVal());
+}
