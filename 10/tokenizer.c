@@ -48,6 +48,7 @@ void advance(codelist *c) {
 	cur_token[0] = 0;
 
 	// Move past any whitespace
+	// TODO: Also move past comments
 	while (char_is_whitespace(*(c->pos)) || ((*c->pos) == 0)) {
 		if ((*c->pos) == 0) {
 			if (hasMoreTokens(c)) {

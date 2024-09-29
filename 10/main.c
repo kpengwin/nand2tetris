@@ -3,6 +3,7 @@
 #include <string.h>
 #include <argp.h>
 #include "llist.h"
+#include "tokenizer.h"
 
 const char *argp_program_version = "jack-compy 0.1";
 const char *argp_program_bug_address = "<me@kenneth-bruce.com>";
@@ -23,10 +24,6 @@ struct arguments
 	char *ifile;
 	char *ofile;
 };
-
-int char_is_whitespace(char c) {
-	return ((c == '\n') || (c == ' ') || (c == '\t'));
-}
 
 static error_t parse_opt (int key, char* arg, struct argp_state *state) {
 	struct arguments *arguments = state->input;
@@ -55,6 +52,10 @@ static error_t parse_opt (int key, char* arg, struct argp_state *state) {
 
 static struct argp argp = { options, parse_opt, args_doc, doc };
 
+int char_is_whitespace(char c) {
+	return ((c == '\n') || (c == ' ') || (c == '\t'));
+}
+
 char *stripline(char * line) {
 	int success=0;
 	int start=0;
@@ -80,41 +81,6 @@ char *stripline(char * line) {
 		strncpy(result,line+start, nlen-1);
 	}
 	return success ? result : NULL;
-}
-
-int char_is_token_breaker(char c) {
-	return ((c == ';') || (c == '(') || (c == '{'));
-}
-
-sllist* parse_to_tokens(char *line) {
-	printf("Tokenizing [%s]\n", line);
-	sllist * tlist = sll_create();
-	char buffer[512];
-	int i=0;
-	// Flags for state machine
-	/*int f_onechar=0;
-	int f_inquotes=0;*/
-	while (*line) {
-		if (char_is_whitespace(*line)) {
-			buffer[i]=0;
-			sll_append(tlist, buffer);
-			i=0;
-		} else if (char_is_token_breaker(*line)) {
-			buffer[i]=0;
-			sll_append(tlist,buffer);
-			buffer[0]=*line;
-			i=1;
-		}
-		else {
-			buffer[i]=*line;
-			i++;
-		}
-		line++;
-	}
-	buffer[i]=0;
-	sll_append(tlist, buffer);
-
-	return tlist;
 }
 
 int main(int argc, char**argv) {
@@ -149,12 +115,6 @@ int main(int argc, char**argv) {
 
 	sll_print(lines);
 	sll_rawprint(lines, 1);
-
-	int l = 6;
-	printf("Testing the token parser on line [%d]\n", l);
-	sllist* tokentest = parse_to_tokens(sll_getindex(lines, l));
-	sll_print(tokentest);
-
 
 	fclose(fp);
 
