@@ -146,7 +146,6 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
 
 #ifndef RKTEST_H
 #define RKTEST_H
