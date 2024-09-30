@@ -116,9 +116,12 @@ int main(int argc, char**argv) {
 	code_list.source = *lines;
 	code_list.line = code_list.source.head;
 	code_list.pos = &(code_list.line->field[0]);
-	int ERR_COUNT;
+	int ERR_COUNT = 0;
+
+	printf("Preparing to tokenize\n");
 
 	init_tokenizer();
+
 	while (hasMoreTokens(&code_list)) {
 		/*printf("ADVANCING: %s  --  [%c] \n", code_list.line->field, *code_list.pos);*/
 		ERR_COUNT += advance(&code_list);
