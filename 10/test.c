@@ -37,7 +37,7 @@ TEST(token_tests, char_is_int_false) {
 }
 
 TEST(token_tests, char_is_symbol_true) {
-	EXPECT_TRUE(char_is_symbol('='));
+	EXPECT_TRUE(char_is_symbol('{'));
 }
 
 TEST(token_tests, char_is_symbol_false) {
@@ -149,6 +149,31 @@ TEST(token_tests, token_parse_line) {
 	advance(&test_code_list);
 	EXPECT_EQ(tokenType(), T_SYMBOL);
 	printf("<SYMBOL>%c</SYMBOL>\n", symbol());
+
+	advance(&test_code_list);
+	EXPECT_EQ(tokenType(), T_SYMBOL);
+	printf("<SYMBOL>%c</SYMBOL>\n", symbol());
+}
+
+TEST(token_tests, token_parse_line2) {
+	sllist *test_code = sll_create();
+	//not supposed to be valid syntax
+	sll_append(test_code, "class Main {");
+	struct codellist test_code_list;
+	test_code_list.source = *test_code;
+	test_code_list.line = test_code_list.source.head;
+	test_code_list.pos = &(test_code_list.line->field[0]);
+	EXPECT_EQ(*test_code_list.pos, 'c');
+
+	printf("Parsing line: [%s]\n", test_code_list.line->field);
+
+	advance(&test_code_list);
+	EXPECT_EQ(tokenType(), T_KEYWORD);
+	printf("<KEYWORD>%d</KEYWORD>\n", keyword());
+
+	advance(&test_code_list);
+	EXPECT_EQ(tokenType(), T_IDENTIFIER);
+	printf("<IDENTIFIER>%s</IDENTIFIER>\n", identifier());
 
 	advance(&test_code_list);
 	EXPECT_EQ(tokenType(), T_SYMBOL);

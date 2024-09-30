@@ -52,10 +52,6 @@ static error_t parse_opt (int key, char* arg, struct argp_state *state) {
 
 static struct argp argp = { options, parse_opt, args_doc, doc };
 
-int char_is_whitespace(char c) {
-	return ((c == '\n') || (c == ' ') || (c == '\t'));
-}
-
 char *stripline(char * line) {
 	int success=0;
 	int start=0;
@@ -113,8 +109,41 @@ int main(int argc, char**argv) {
 		}
 	}
 
-	sll_print(lines);
+	//sll_print(lines);
 	sll_rawprint(lines, 1);
+
+	codelist code_list;
+	code_list.source = *lines;
+	code_list.line = code_list.source.head;
+	code_list.pos = &(code_list.line->field[0]);
+
+	while (hasMoreTokens(&code_list)) {
+		advance(&code_list);
+		char *t_str;
+		switch (tokenType()) {
+			case T_NULL:
+				break;
+			case T_KEYWORD:
+				printf("<KEYWORD>%d</KEYWORD>\n", keyword());
+				break;
+			case T_SYMBOL:
+				printf("<SYMBOL>%c</SYMBOL>\n", symbol());
+				break;
+			case T_IDENTIFIER:
+				t_str = identifier();
+				printf("<IDENTIFIER>%s</IDENTIFIER>\n", t_str);
+				free(t_str);
+				break;
+			case T_INT_CONST:
+				printf("<INT_CONST>%d</INT_CONST>\n, ", intVal());
+				break;
+			case T_STRING_CONST:
+				t_str = stringVal();
+				printf("<STRING_CONST>%s</STRING_CONST>\n", t_str);
+				free(t_str);
+				break;
+		}
+	}
 
 	fclose(fp);
 
