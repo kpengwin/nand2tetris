@@ -143,7 +143,7 @@ int main(int argc, char**argv) {
 				free(t_str);
 				break;
 			case T_INT_CONST:
-				printf("<INT_CONST>%d</INT_CONST>\n, ", intVal());
+				printf("<INT_CONST>%d</INT_CONST>\n", intVal());
 				break;
 			case T_STRING_CONST:
 				t_str = stringVal();
