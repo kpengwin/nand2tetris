@@ -16,7 +16,7 @@ char cur_token[512] = "";
 
 /* True if there are more tokens */
 int hasMoreTokens(codelist *c) {
-	return ((c->pos != NULL) || (c->line != NULL));
+	return ((*(c->pos) != 0) || (c->line->next != NULL));
 }
 
 int char_is_whitespace(char c) {
@@ -44,7 +44,7 @@ void init_tokenizer() {
 }
 
 /* Advance to the next token */
-void advance(codelist *c) {
+int advance(codelist *c) {
 	STR_LITERAL = 0;
 	cur_token[0] = 0;
 	int PAST_COMMENTS_AND_WHITESPACE = 0;
@@ -57,7 +57,7 @@ void advance(codelist *c) {
 					c->line = c->line->next;
 					c->pos = &(c->line->field[0]);
 				} else {
-					return;
+					return 0;
 				}
 			} else {
 				c->pos++;
@@ -74,7 +74,7 @@ void advance(codelist *c) {
 						c->line = c->line->next;
 						c->pos = &(c->line->field[0]);
 					} else {
-						return;
+						return 0;
 					}
 				} else if ((*(c->pos) == '*') && (*(c->pos+1) == '/')) {
 					c->pos = c->pos + 2;
@@ -98,7 +98,7 @@ void advance(codelist *c) {
 		cur_token[0] = *(c->pos);
 		cur_token[1] = 0;
 		c->pos++;
-		return;
+		return 0;
 	}
 
 	// Ints are uninterupted string of ints
@@ -110,7 +110,7 @@ void advance(codelist *c) {
 			c->pos++;
 		} while(char_is_int(*(c->pos)));
 		cur_token[i]=0;
-		return;
+		return 0;
 	}
 
 	// Quoted string
@@ -125,7 +125,7 @@ void advance(codelist *c) {
 		c->pos++; //move past closing '"'
 		cur_token[i]=0;
 		STR_LITERAL = 1; // Flag set
-		return;
+		return 0;
 	}
 
 	// Otherwise it should be either a keyword or an identifier, either is copied literally
@@ -137,10 +137,10 @@ void advance(codelist *c) {
 			c->pos++;
 		}
 		cur_token[i]=0;
-		return;
+		return 0;
 	}
 
-	return; // TODO: replace this with an error, as we should never get here.
+	return 1; // TODO: replace this with an error, as we should never get here.
 }
 
 /* Returns the type of the current token */

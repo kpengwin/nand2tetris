@@ -60,7 +60,7 @@ int char_is_alphabet(char c) ;
 
 
 /* Advance to the next token */
-void advance(codelist *c) ;
+int advance(codelist *c) ;
 
 /* Returns the type of the current token */
 enum TOKEN_TYPE tokenType(void) ;
