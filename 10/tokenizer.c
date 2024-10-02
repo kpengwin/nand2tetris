@@ -294,4 +294,5 @@ char * k_to_s(enum KEYWORD word) {
 		case K_THIS:
 			return "this";
 	}
+	return "";
 };

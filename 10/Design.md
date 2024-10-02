@@ -18,7 +18,7 @@ Write the compiler in C as a learning project.
 3. [done] Get it working to parse the file into the list
 4. [done] Create tokenizer (10.4.1)
 5. Create simple compillation engine (10.4.2 a)
- * Create .c and .h files, outline functions
+ * [done] Create .c and .h files, outline functions
  * Create tests in test.c
  * Implement functions until the tests pass
 6. Complete compilation engine expressions (10.4.2 b)
