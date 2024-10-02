@@ -109,7 +109,7 @@ int main(int argc, char**argv) {
 		}
 	}
 
-	//sll_print(lines);
+	/*sll_print(lines);*/
 	sll_rawprint(lines, 1);
 
 	codelist code_list;
@@ -124,7 +124,7 @@ int main(int argc, char**argv) {
 
 	printf("<tokens>\n");
 	while (hasMoreTokens(&code_list)) {
-		printf("ADVANCING: %s  --  [%c] \n", code_list.line->field, *code_list.pos);
+		/*printf("ADVANCING: %s  --  [%c] \n", code_list.line->field, *code_list.pos);*/
 		ERR_COUNT += advance(&code_list);
 		if (ERR_COUNT>5)
 			break;
@@ -155,11 +155,11 @@ int main(int argc, char**argv) {
 				free(t_str);
 				break;
 			case T_INT_CONST:
-				printf("<int_const> %d </int_const>\n", intVal());
+				printf("<integerConstant> %d </integerConstant>\n", intVal());
 				break;
 			case T_STRING_CONST:
 				t_str = stringVal();
-				printf("<string_const> %s </string_const>\n", t_str);
+				printf("<stringConstant> %s </stringConstant>\n", t_str);
 				free(t_str);
 				break;
 		}
