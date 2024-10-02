@@ -247,3 +247,51 @@ char * stringVal() {
 	return identifier(); //handle quotes in advance()
 }
 
+char * k_to_s(enum KEYWORD word) {
+	switch (word) {
+		case K_ERR:    // Not a keyword, is an error
+			return "err";
+		case K_CLASS:
+			return "class";
+		case K_METHOD:
+			return "method";
+		case K_FUNCTION:
+			return "function";
+		case K_CONSTRUCTOR:
+			return "constructor";
+		case K_INT:
+			return "int";
+		case K_BOOLEAN:
+			return "boolean";
+		case K_CHAR:
+			return "char";
+		case K_VOID:
+			return "void";
+		case K_VAR:
+			return "var";
+		case K_STATIC:
+			return "static";
+		case K_FIELD:
+			return "field";
+		case K_LET:
+			return "let";
+		case K_DO:
+			return "do";
+		case K_IF:
+			return "if";
+		case K_ELSE:
+			return "else";
+		case K_WHILE:
+			return "while";
+		case K_RETURN:
+			return "return";
+		case K_TRUE:
+			return "true";
+		case K_FALSE:
+			return "false";
+		case K_NULL:
+			return "null";
+		case K_THIS:
+			return "this";
+	}
+};

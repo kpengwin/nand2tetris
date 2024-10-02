@@ -122,36 +122,49 @@ int main(int argc, char**argv) {
 
 	init_tokenizer();
 
+	printf("<tokens>\n");
 	while (hasMoreTokens(&code_list)) {
-		/*printf("ADVANCING: %s  --  [%c] \n", code_list.line->field, *code_list.pos);*/
+		printf("ADVANCING: %s  --  [%c] \n", code_list.line->field, *code_list.pos);
 		ERR_COUNT += advance(&code_list);
 		if (ERR_COUNT>5)
 			break;
 		char *t_str;
+		char sym;
 		switch (tokenType()) {
 			case T_NULL:
 				break;
 			case T_KEYWORD:
-				printf("<KEYWORD>%d</KEYWORD>\n", keyword());
+				printf("<keyword> %s </keyword>\n", k_to_s(keyword()));
 				break;
 			case T_SYMBOL:
-				printf("<SYMBOL>%c</SYMBOL>\n", symbol());
+				sym = symbol();
+				if (sym == '<')
+					printf("<symbol> &lt </symbol>\n");
+				else if (sym == '>')
+					printf("<symbol> &gt </symbol>\n");
+				else if (sym == '&')
+					printf("<symbol> &amp </symbol>\n");
+				else if (sym == '"')
+					printf("<symbol> &quot </symbol>\n");
+				else
+					printf("<symbol> %c </symbol>\n", sym);
 				break;
 			case T_IDENTIFIER:
 				t_str = identifier();
-				printf("<IDENTIFIER>%s</IDENTIFIER>\n", t_str);
+				printf("<identifier> %s </identifier>\n", t_str);
 				free(t_str);
 				break;
 			case T_INT_CONST:
-				printf("<INT_CONST>%d</INT_CONST>\n", intVal());
+				printf("<int_const> %d </int_const>\n", intVal());
 				break;
 			case T_STRING_CONST:
 				t_str = stringVal();
-				printf("<STRING_CONST>%s</STRING_CONST>\n", t_str);
+				printf("<string_const> %s </string_const>\n", t_str);
 				free(t_str);
 				break;
 		}
 	}
+	printf("</tokens>\n");
 
 	fclose(fp);
 

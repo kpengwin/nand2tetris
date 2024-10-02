@@ -83,6 +83,10 @@ int intVal(void) ;
 /* returns the string value of the current token
 * without opening and closing double quotes */
 char * stringVal(void) ;
+
+char * k_to_s(enum KEYWORD word) ;
+
+
 #define tokenizer_h
 #endif
 
