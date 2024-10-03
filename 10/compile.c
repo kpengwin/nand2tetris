@@ -1,10 +1,11 @@
 // External Includes
 #include <stdio.h>
+#include <assert.h>
 
 // Project Includes
 #include "compile.h"
 #include "tokenizer.h"
-/*#include "tokenizer.h"*/
+
 
 codelist *CODE;
 
@@ -72,16 +73,22 @@ void compileDo() {
 
 /* Compiles a return statement */
 void compileReturn() {
+	assert(((tokenType() == T_KEYWORD) && (keyword() == K_RETURN)) && 
+		"ERROR: compileReturn() called with non-return statement");
+	
 	printf("<returnStatement>\n");
 	printf("<keyword> %s </keyword>\n", k_to_s(keyword()));
 	advance(CODE);
+
+	//optional expression
 	if (tokenType() != T_SYMBOL){
 		compileExpression();
 	}
 	
-	// TODO: assert this
-	if ((tokenType() == T_SYMBOL) && (symbol() == ';'))
-		printf("<symbol> ; <symbol>\n");
+	assert(((tokenType() == T_SYMBOL) && (symbol() == ';')) &&
+		"Return statement must be terminated by a ';'");
+
+	printf("<symbol> ; <symbol>\n");
 	printf("</returnStatement>\n");
 	return;
 }
