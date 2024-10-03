@@ -1,6 +1,15 @@
-#include "compile.h"
+// External Includes
+#include <stdio.h>
 
-void initializeCompiler() {
+// Project Includes
+#include "compile.h"
+#include "tokenizer.h"
+/*#include "tokenizer.h"*/
+
+codelist *CODE;
+
+void initializeCompiler(codelist *code) {
+	CODE = code;
 	return;
 }
 
@@ -63,6 +72,17 @@ void compileDo() {
 
 /* Compiles a return statement */
 void compileReturn() {
+	printf("<returnStatement>\n");
+	printf("<keyword> %s </keyword>\n", k_to_s(keyword()));
+	advance(CODE);
+	if (tokenType() != T_SYMBOL){
+		compileExpression();
+	}
+	
+	// TODO: assert this
+	if ((tokenType() == T_SYMBOL) && (symbol() == ';'))
+		printf("<symbol> ; <symbol>\n");
+	printf("</returnStatement>\n");
 	return;
 }
 

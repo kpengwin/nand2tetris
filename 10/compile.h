@@ -1,6 +1,7 @@
 #ifndef compile_h
+#include "tokenizer.h"
 
-void initializeCompiler() ;
+void initializeCompiler(codelist *code) ;
 
 /* Compiles a complete class */
 void compileClass() ;
