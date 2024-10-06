@@ -117,23 +117,22 @@ int main(int argc, char**argv) {
 	code_list.source = *lines;
 	code_list.line = code_list.source.head;
 	code_list.pos = &(code_list.line->field[0]);
-	int ERR_COUNT = 0;
 
 	/*printf("Preparing to tokenize\n");*/
 
 	init_tokenizer();
 	initializeCompiler(&code_list);
 
+	advance(&code_list);
 	printf("<tokens>\n");
 	while (hasMoreTokens(&code_list)) {
 		/*printf("ADVANCING: %s  --  [%c] \n", code_list.line->field, *code_list.pos);*/
-		ERR_COUNT += advance(&code_list);
-		if (ERR_COUNT>5)
-			break;
 		if ((tokenType() == T_KEYWORD) && (keyword() == K_RETURN)){
 			compileReturn();
+			print_current_token();
 		} else {
 			print_current_token();
+			advance(&code_list);
 		}
 	}
 	printf("</tokens>\n");
