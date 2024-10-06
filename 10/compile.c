@@ -73,11 +73,11 @@ void compileDo() {
 
 /* Compiles a return statement */
 void compileReturn() {
-	assert(((tokenType() == T_KEYWORD) && (keyword() == K_RETURN)) && 
+	assert(isKeywordX(K_RETURN) && 
 		"ERROR: compileReturn() called with non-return statement");
 	
 	printf("<returnStatement>\n");
-	printf("<keyword> %s </keyword>\n", k_to_s(keyword()));
+	print_current_token();
 	advance(CODE);
 
 	//optional expression
@@ -85,10 +85,10 @@ void compileReturn() {
 		compileExpression();
 	}
 	
-	assert(((tokenType() == T_SYMBOL) && (symbol() == ';')) &&
+	assert(isSymbolX(';') &&
 		"Return statement must be terminated by a ';'");
 
-	printf("<symbol> ; <symbol>\n");
+	print_current_token();
 	printf("</returnStatement>\n");
 	return;
 }

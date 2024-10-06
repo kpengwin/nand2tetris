@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <argp.h>
+#include "compile.h"
 #include "llist.h"
 #include "tokenizer.h"
 
@@ -92,9 +93,9 @@ int main(int argc, char**argv) {
 
 	argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
-	printf("Running jack compiler with in_file:[%s] out_file:[%s]\n",
+	/*printf("Running jack compiler with in_file:[%s] out_file:[%s]\n",
 		arguments.ifile,
-		arguments.ofile);
+		arguments.ofile);*/
 	fp = fopen(arguments.ifile, "r");
 	if (fp==NULL) {
 		printf("Error opening file [%s]\n", arguments.ifile);
@@ -110,7 +111,7 @@ int main(int argc, char**argv) {
 	}
 
 	/*sll_print(lines);*/
-	sll_rawprint(lines, 1);
+	/*sll_rawprint(lines, 1);*/
 
 	codelist code_list;
 	code_list.source = *lines;
@@ -118,9 +119,10 @@ int main(int argc, char**argv) {
 	code_list.pos = &(code_list.line->field[0]);
 	int ERR_COUNT = 0;
 
-	printf("Preparing to tokenize\n");
+	/*printf("Preparing to tokenize\n");*/
 
 	init_tokenizer();
+	initializeCompiler(&code_list);
 
 	printf("<tokens>\n");
 	while (hasMoreTokens(&code_list)) {
@@ -128,40 +130,10 @@ int main(int argc, char**argv) {
 		ERR_COUNT += advance(&code_list);
 		if (ERR_COUNT>5)
 			break;
-		char *t_str;
-		char sym;
-		switch (tokenType()) {
-			case T_NULL:
-				break;
-			case T_KEYWORD:
-				printf("<keyword> %s </keyword>\n", k_to_s(keyword()));
-				break;
-			case T_SYMBOL:
-				sym = symbol();
-				if (sym == '<')
-					printf("<symbol> &lt </symbol>\n");
-				else if (sym == '>')
-					printf("<symbol> &gt </symbol>\n");
-				else if (sym == '&')
-					printf("<symbol> &amp </symbol>\n");
-				else if (sym == '"')
-					printf("<symbol> &quot </symbol>\n");
-				else
-					printf("<symbol> %c </symbol>\n", sym);
-				break;
-			case T_IDENTIFIER:
-				t_str = identifier();
-				printf("<identifier> %s </identifier>\n", t_str);
-				free(t_str);
-				break;
-			case T_INT_CONST:
-				printf("<integerConstant> %d </integerConstant>\n", intVal());
-				break;
-			case T_STRING_CONST:
-				t_str = stringVal();
-				printf("<stringConstant> %s </stringConstant>\n", t_str);
-				free(t_str);
-				break;
+		if ((tokenType() == T_KEYWORD) && (keyword() == K_RETURN)){
+			compileReturn();
+		} else {
+			print_current_token();
 		}
 	}
 	printf("</tokens>\n");

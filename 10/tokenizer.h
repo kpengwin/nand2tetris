@@ -86,6 +86,11 @@ char * stringVal(void) ;
 
 char * k_to_s(enum KEYWORD word) ;
 
+/* Outputs the current token with xml tags */
+void print_current_token(void) ;
+
+#define isSymbolX(s) ((tokenType() == T_SYMBOL) && (symbol() == s))
+#define isKeywordX(k) ((tokenType() == T_KEYWORD) && (keyword() == k))
 
 #define tokenizer_h
 #endif

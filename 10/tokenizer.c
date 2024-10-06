@@ -172,7 +172,7 @@ enum TOKEN_TYPE tokenType(void) {
 }
 
 /* returns which keyword corresponds to the current token */
-enum KEYWORD keyword() {
+enum KEYWORD keyword(void) {
 	if (strcmp(cur_token, "class") == 0)
 		return K_CLASS;
 	else if (strcmp(cur_token, "method") == 0)
@@ -222,14 +222,14 @@ enum KEYWORD keyword() {
 
 
 /* returns the character of the current token */
-char symbol() {
+char symbol(void) {
 	return cur_token[0];
 }
 
 
 /* returns the string of the current token 
  * MUST FREE AFTER USE */
-char* identifier() {
+char* identifier(void) {
 	size_t len = strlen(cur_token);
 	char *identifier = calloc(len+1, sizeof(char));
 	strncpy(identifier, cur_token, len);
@@ -237,13 +237,13 @@ char* identifier() {
 }
 
 /* returns the integer value of the current token */
-int intVal() {
+int intVal(void) {
 	return atoi(cur_token);
 }
 
 /* returns the string value of the current token
 * without opening and closing double quotes */
-char * stringVal() {
+char * stringVal(void) {
 	return identifier(); //handle quotes in advance()
 }
 
@@ -296,3 +296,42 @@ char * k_to_s(enum KEYWORD word) {
 	}
 	return "";
 };
+
+void print_current_token(void) {
+	char *t_str;
+	char sym;
+	switch (tokenType()) {
+		case T_NULL:
+			break;
+		case T_KEYWORD:
+			printf("<keyword> %s </keyword>\n", k_to_s(keyword()));
+			break;
+		case T_SYMBOL:
+			sym = symbol();
+			if (sym == '<')
+				printf("<symbol> &lt </symbol>\n");
+			else if (sym == '>')
+				printf("<symbol> &gt </symbol>\n");
+			else if (sym == '&')
+				printf("<symbol> &amp </symbol>\n");
+			else if (sym == '"')
+				printf("<symbol> &quot </symbol>\n");
+			else
+				printf("<symbol> %c </symbol>\n", sym);
+			break;
+		case T_IDENTIFIER:
+			t_str = identifier();
+			printf("<identifier> %s </identifier>\n", t_str);
+			free(t_str);
+			break;
+		case T_INT_CONST:
+			printf("<integerConstant> %d </integerConstant>\n", intVal());
+			break;
+		case T_STRING_CONST:
+			t_str = stringVal();
+			printf("<stringConstant> %s </stringConstant>\n", t_str);
+			free(t_str);
+			break;
+	}
+}
+

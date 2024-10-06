@@ -226,3 +226,4 @@ TEST(token_tests, token_parse_lines_with_comments) {
 	EXPECT_EQ(tokenType(), T_INT_CONST);
 	printf("<INT_CONST>%d</INT_CONST>\n", intVal());
 }
+
