@@ -48,6 +48,16 @@ void compileSubroutineBody() {
 
 /* Compiles a var declaration */
 void compileVarDec() {
+	requireT(isKeywordX(K_VAR),
+		  "compileVarDec() called without var keyword", "<varDec>\n");
+	requireT(isIdentifier(),
+		  "missing type def", "");
+	requireT(isIdentifier(),
+		  "missing var name", "");
+	//also need to support multiple var declaration
+	requireT(isSymbolX(';'),
+		  "var dec must end with ';'", "");
+	printf("</varDec>\n");
 	return;
 }
 
@@ -79,7 +89,7 @@ void compileStatements() {
 void compileLet() {
 	requireT(isKeywordX(K_LET),
 		  "compileLet() called with non-let statement",
-		  "<let>\n");
+		  "<letStatement>\n");
 	requireT((tokenType() == T_IDENTIFIER),
 		  "Let can only assign to an identifier", "");
 	requireT(isSymbolX('='),
@@ -87,7 +97,7 @@ void compileLet() {
 	compileExpression();
 	requireT(isSymbolX(';'),
 		  "Let statement must be terminated by a ';'", "");
-	printf("</let>\n");
+	printf("</letStatement>\n");
 	return;
 }
 
@@ -145,7 +155,20 @@ void compileDo() {
 	requireT(isKeywordX(K_DO),
 		  "compileDo() called with non-do statement",
 		  "<doStatement>\n");
-	compileExpression();
+	requireT(isIdentifier(),
+		  "must be either subroutine name or classname", "");
+	if isSymbolX('.') {
+		requireT(isSymbolX('.'), "", "");
+		requireT(isIdentifier(),
+		   "must follow . with subroutine name", "");
+		requireT(isSymbolX('('), "missing (", "");
+		compileExpressionList();
+		requireT(isSymbolX(')'), "missing )", "");
+	} else if isSymbolX('(') {
+		requireT(isSymbolX('('), "missing (", "");
+		compileExpressionList();
+		requireT(isSymbolX(')'), "missing )", "");
+	}
 	requireT(isSymbolX(';'),
 		  "Do statement must be terminated by a ';'", "");
 	printf("</doStatement>\n");
@@ -169,6 +192,9 @@ void compileReturn() {
 
 /* Compiles an expression */
 void compileExpression() {
+	printf("<expression>\n");
+	compileTerm();
+	printf("</expression>\n");
 	return;
 }
 
@@ -182,12 +208,18 @@ void compileExpression() {
  * to distinguish between the possibilities. Any other token 
  * is not part of this term and should not be advanced over */
 void compileTerm() {
+	printf("<expression>\n");
+	requireT(isIdentifier(),
+		  "must have an identifier", "");
+	printf("</expression>\n");
 	return;
 }
 
 /* Compiles a (possibly empty) comma-separated list of expressions
  * Returns the number of expressions in the list */
 int compileExpressionList() {
+	printf("<expressionList>\n");
+	printf("</expressionList>\n");
 	return 0;
 }
 

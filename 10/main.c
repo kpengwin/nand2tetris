@@ -127,8 +127,14 @@ int main(int argc, char**argv) {
 	printf("<tokens>\n");
 	while (hasMoreTokens(&code_list)) {
 		/*printf("ADVANCING: %s  --  [%c] \n", code_list.line->field, *code_list.pos);*/
-		if ((tokenType() == T_KEYWORD) && (keyword() == K_RETURN)){
+		if (isKeywordX(K_RETURN) ){
 			compileReturn();
+			print_current_token();
+		} else if isKeywordX(K_LET) {
+			compileLet();
+			print_current_token();
+		} else if isKeywordX(K_DO) {
+			compileDo();
 			print_current_token();
 		} else {
 			print_current_token();
