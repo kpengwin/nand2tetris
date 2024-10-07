@@ -22,16 +22,57 @@ void initializeCompiler(codelist *code) {
 
 /* Compiles a complete class */
 void compileClass() {
+	requireT(isKeywordX(K_CLASS),
+		  "must start with class dec",
+		  "<class>\n");
+	requireT(isIdentifier(), 
+		  "missing class name", "");
+	requireT(isSymbolX('{'),
+		  "missing { in class", "");
+	while (isKeywordX(K_STATIC) || isKeywordX(K_FIELD)) {
+		compileClassVarDec();
+	}
+	while (isKeywordX(K_CONSTRUCTOR) || isKeywordX(K_FUNCTION) || isKeywordX(K_METHOD)) {
+		compileSubroutine();
+	}
+	requireT(isSymbolX('}'),
+		  "missing } in class", "");
+	printf("</class>\n");
 	return;
 }
 
 /* Compiles a static variable or field declarations*/
 void compileClassVarDec() {
+	requireT((isKeywordX(K_STATIC) || isKeywordX(K_FIELD)),
+		  "var dec should be 'static' or 'field'",
+		  "<classVarDec>\n");
+	requireT(isIdentifier(),
+		  "missing type def", "");
+	requireT(isIdentifier(),
+		  "missing var name", "");
+	// TODO: also need to support multiple var declaration
+	requireT(isSymbolX(';'),
+		  "var dec must end with ';'", "");
+	printf("</classVarDec>\n");
 	return;
 }
 
 /* Compiles a complete method, function, or constructor*/
 void compileSubroutine() {
+	requireT((isKeywordX(K_CONSTRUCTOR) || isKeywordX(K_FUNCTION) || isKeywordX(K_METHOD)),
+		  "subroutine dec should be 'constructor' or 'function' or 'method'",
+		  "<subroutineDec>\n");
+	requireT(isIdentifier(),
+		  "missing type def", "");
+	requireT(isIdentifier(),
+		  "missing subroutine name", "");
+	requireT(isSymbolX('('),
+		  "missing '(' in subroutine paremeter list", "");
+	compileParameterList();
+	requireT(isSymbolX(')'),
+		  "missing ')' in subroutine paremeter list", "");
+	compileSubroutineBody();
+	printf("</subroutineDec>\n");
 	return;
 }
 
