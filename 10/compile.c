@@ -38,11 +38,32 @@ void compileSubroutine() {
 /* Compiles a possibly empty parameter list. Does not handle the 
  * enclosing parenthesis tokens ( and ) */
 void compileParameterList() {
+	printf("<parameterList>\n");
+	if (isSymbolX(')')) {
+		printf("</parameterList>\n");
+		return;
+	} else { // TODO: need to handle more than one comma sep
+		requireT(isIdentifier(),
+		   "missing type def", "");
+		requireT(isIdentifier(),
+		   "missing var name", "");
+	}
+	printf("</parameterList>\n");
 	return;
 }
 
 /* Compiles a subroutine's body */
 void compileSubroutineBody() {
+	requireT(isSymbolX('{'),
+		  "subroutine body must start with {",
+		  "<subroutineBody>\n");
+	while (isKeywordX(K_VAR)) {
+		compileVarDec();
+	}
+	compileStatements();
+	requireT(isSymbolX('}'),
+		  "subroutine body must end with }", "");
+	printf("</subroutineBody>\n");
 	return;
 }
 
@@ -54,7 +75,7 @@ void compileVarDec() {
 		  "missing type def", "");
 	requireT(isIdentifier(),
 		  "missing var name", "");
-	//also need to support multiple var declaration
+	// TODO: also need to support multiple var declaration
 	requireT(isSymbolX(';'),
 		  "var dec must end with ';'", "");
 	printf("</varDec>\n");
