@@ -6,6 +6,12 @@
 #include "compile.h"
 #include "tokenizer.h"
 
+#define requireT(assertion, err_msg, tag) {\
+	assert(assertion && err_msg);\
+	printf("%s", tag);\
+	print_current_token();\
+	advance(CODE);\
+}
 
 codelist *CODE;
 
@@ -71,164 +77,92 @@ void compileStatements() {
 
 /* Compiles a let statement */
 void compileLet() {
-	assert(isKeywordX(K_LET) &&
-		"ERROR: compileLet() called with non-let statement");
-	
-	printf("<let>\n");
-	print_current_token();
-	advance(CODE);
-	
-	assert((tokenType() == T_IDENTIFIER) &&
-		"ERROR: Let can only assign to an identifier");
-	print_current_token();
-	advance(CODE);
-
-	assert(isSymbolX('=') &&
-		"Let statement must include '='");
-	print_current_token();
-	advance(CODE);
-
+	requireT(isKeywordX(K_LET),
+		  "compileLet() called with non-let statement",
+		  "<let>\n");
+	requireT((tokenType() == T_IDENTIFIER),
+		  "Let can only assign to an identifier", "");
+	requireT(isSymbolX('='),
+		  "Let statement must include '='", "");
 	compileExpression();
-
-	assert(isSymbolX(';') &&
-		"Let statement must be terminated by a ';'");
-	print_current_token();
-	advance(CODE);
-
+	requireT(isSymbolX(';'),
+		  "Let statement must be terminated by a ';'", "");
+	printf("</let>\n");
 	return;
 }
 
 /* Compiles an if statement possibly with a trailing else clause */
 void compileIf() {
-	assert(isKeywordX(K_IF) &&
-		"ERROR: compileIf() called with non-if statement");
-	
-	printf("<ifStatement>\n");
-	print_current_token();
-	advance(CODE);
-
-	assert(isSymbolX('(') &&
-		"ERROR: missing '(' in if statement");
-	print_current_token();
-	advance(CODE);
-
+	requireT(isKeywordX(K_IF),
+		  "compileIf() called with non-if statement",
+		  "<ifStatement>\n");
+	requireT(isSymbolX('('),
+		  "missing '(' in if statement", "");
 	compileExpression();
-
-	assert(isSymbolX(')') &&
-		"ERROR: missing ')' in if statement");
-	print_current_token();
-	advance(CODE);
-
-	assert(isSymbolX('{') &&
-		"ERROR: missing '{' in if statement");
-	print_current_token();
-	advance(CODE);
-
+	requireT(isSymbolX(')'),
+		  "missing ')' in if statement", "");
+	requireT(isSymbolX('{'),
+		  "missing '{' in if statement", "");
 	compileStatements();
-
-	assert(isSymbolX('}') &&
-		"ERROR: missing '}' in if statement");
-	print_current_token();
-	advance(CODE);
+	requireT(isSymbolX('}'),
+		  "missing '}' in if statement", "");
 
 	if (isKeywordX(K_ELSE)) {
 		print_current_token();
 		advance(CODE);
 
-		assert(isSymbolX('{') &&
-		 "ERROR: missing '{' in if statement");
-		print_current_token();
-		advance(CODE);
-
+		requireT(isSymbolX('{'),
+		   "missing '{' in else statement", "");
 		compileStatements();
-
-		assert(isSymbolX('}') &&
-		 "ERROR: missing '}' in if statement");
-		print_current_token();
-		advance(CODE);
+		requireT(isSymbolX('}'),
+		   "missing '}' in else statement", "");
 	}
-
 	printf("</ifStatement>\n");
-
 	return;
 }
 
 /* Compiles a while statement */
 void compileWhile() {
-	assert(isKeywordX(K_WHILE) &&
-		"ERROR: compileWhile() called with non-while statement");
-	
-	printf("<whileStatement>\n");
-	print_current_token();
-	advance(CODE);
-
-	assert(isSymbolX('(') &&
-		"ERROR: missing '(' in while statement");
-	print_current_token();
-	advance(CODE);
-
+	requireT(isKeywordX(K_WHILE),
+		  "compileWhile() called with non-while statement",
+		  "<whileStatement>\n");
+	requireT(isSymbolX('('),
+		  "missing '(' in while statement", "");
 	compileExpression();
-
-	assert(isSymbolX(')') &&
-		"ERROR: missing ')' in while statement");
-	print_current_token();
-	advance(CODE);
-
-	assert(isSymbolX('{') &&
-		"ERROR: missing '{' in while statement");
-	print_current_token();
-	advance(CODE);
-
+	requireT(isSymbolX(')'),
+		  "missing ')' in while statement", "");
+	requireT(isSymbolX('{'),
+		  "missing '{' in while statement", "");
 	compileStatements();
-
-	assert(isSymbolX('}') &&
-		"ERROR: missing '}' in while statement");
-	print_current_token();
-	advance(CODE);
-
+	requireT(isSymbolX('}'),
+		  "missing '}' in while statement", "");
 	printf("</whileStatement>\n");
 	return;
 }
 
 /* Compiles do statement */
 void compileDo() {
-	assert(isKeywordX(K_DO) &&
-		"ERROR: compileDo() called with non-do statement");
-	
-	printf("<doStatement>\n");
-	print_current_token();
-	advance(CODE);
-
+	requireT(isKeywordX(K_DO),
+		  "compileDo() called with non-do statement",
+		  "<doStatement>\n");
 	compileExpression();
-
-	assert(isSymbolX(';') &&
-		"Do statement must be terminated by a ';'");
-
-	print_current_token();
-	advance(CODE);
+	requireT(isSymbolX(';'),
+		  "Do statement must be terminated by a ';'", "");
 	printf("</doStatement>\n");
 	return;
 }
 
 /* Compiles a return statement */
 void compileReturn() {
-	assert(isKeywordX(K_RETURN) && 
-		"ERROR: compileReturn() called with non-return statement");
-	
-	printf("<returnStatement>\n");
-	print_current_token();
-	advance(CODE);
-
+	requireT(isKeywordX(K_RETURN),
+		  "compileReturn() called with non-return statement",
+		  "<returnStatement>\n");
 	//optional expression
 	if (tokenType() != T_SYMBOL){
 		compileExpression();
 	}
-	
-	assert(isSymbolX(';') &&
-		"Return statement must be terminated by a ';'");
-
-	print_current_token();
-	advance(CODE);
+	requireT(isSymbolX(';'),
+		  "Return statement must be terminated by a ';'", "");
 	printf("</returnStatement>\n");
 	return;
 }
