@@ -46,7 +46,7 @@ void compileClassVarDec() {
 	requireT((isKeywordX(K_STATIC) || isKeywordX(K_FIELD)),
 		  "var dec should be 'static' or 'field'",
 		  "<classVarDec>\n");
-	requireT(isIdentifier(),
+	requireT(isType(),
 		  "missing type def", "");
 	requireT(isIdentifier(),
 		  "missing var name", "");
@@ -62,7 +62,7 @@ void compileSubroutine() {
 	requireT((isKeywordX(K_CONSTRUCTOR) || isKeywordX(K_FUNCTION) || isKeywordX(K_METHOD)),
 		  "subroutine dec should be 'constructor' or 'function' or 'method'",
 		  "<subroutineDec>\n");
-	requireT(isIdentifier(),
+	requireT(isType(),
 		  "missing type def", "");
 	requireT(isIdentifier(),
 		  "missing subroutine name", "");
@@ -84,7 +84,7 @@ void compileParameterList() {
 		printf("</parameterList>\n");
 		return;
 	} else { // TODO: need to handle more than one comma sep
-		requireT(isIdentifier(),
+		requireT(isType(),
 		   "missing type def", "");
 		requireT(isIdentifier(),
 		   "missing var name", "");
@@ -112,7 +112,7 @@ void compileSubroutineBody() {
 void compileVarDec() {
 	requireT(isKeywordX(K_VAR),
 		  "compileVarDec() called without var keyword", "<varDec>\n");
-	requireT(isIdentifier(),
+	requireT(isType(),
 		  "missing type def", "");
 	requireT(isIdentifier(),
 		  "missing var name", "");
@@ -126,24 +126,35 @@ void compileVarDec() {
 /* Compiles a sequence of statements. Does not handle the enclosing
  * curly bracket tokens { and } */
 void compileStatements() {
-	for(;;) {
-		if (tokenType() != T_KEYWORD)
-			break;
+	printf("<statements>\n");
+	int statement = 1;
+	while (statement) {
+		if (tokenType() != T_KEYWORD) {
+			statement = 0;
+			continue;
+		}
 		switch (keyword()) {
 			case K_LET:
 				compileLet();
+				break;
 			case K_IF:
 				compileIf();
+				break;
 			case K_WHILE:
 				compileWhile();
+				break;
 			case K_DO:
 				compileDo();
+				break;
 			case K_RETURN:
 				compileReturn();
+				break;
 			default:
+				statement=0;
 				break;
 		}
 	}
+	printf("</statements>\n");
 	return;
 }
 
@@ -270,10 +281,10 @@ void compileExpression() {
  * to distinguish between the possibilities. Any other token 
  * is not part of this term and should not be advanced over */
 void compileTerm() {
-	printf("<expression>\n");
+	printf("<term>\n");
 	requireT(isIdentifier(),
 		  "must have an identifier", "");
-	printf("</expression>\n");
+	printf("</term>\n");
 	return;
 }
 

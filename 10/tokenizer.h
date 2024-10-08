@@ -92,6 +92,7 @@ void print_current_token(void) ;
 #define isSymbolX(s) ((tokenType() == T_SYMBOL) && (symbol() == s))
 #define isKeywordX(k) ((tokenType() == T_KEYWORD) && (keyword() == k))
 #define isIdentifier() (tokenType() == T_IDENTIFIER)
+#define isType() (isKeywordX(K_INT) || isKeywordX(K_CHAR) || isKeywordX(K_BOOLEAN) || isKeywordX(K_VOID) || isIdentifier() )
 
 #define tokenizer_h
 #endif

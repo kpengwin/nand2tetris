@@ -122,11 +122,13 @@ int main(int argc, char**argv) {
 
 	init_tokenizer();
 	initializeCompiler(&code_list);
-
 	advance(&code_list);
+	compileClass();
+
+	/*advance(&code_list);
 	printf("<tokens>\n");
 	while (hasMoreTokens(&code_list)) {
-		/*printf("ADVANCING: %s  --  [%c] \n", code_list.line->field, *code_list.pos);*/
+		printf("ADVANCING: %s  --  [%c] \n", code_list.line->field, *code_list.pos);
 		if (isKeywordX(K_RETURN) ){
 			compileReturn();
 			print_current_token();
@@ -141,7 +143,7 @@ int main(int argc, char**argv) {
 			advance(&code_list);
 		}
 	}
-	printf("</tokens>\n");
+	printf("</tokens>\n"); */
 
 	fclose(fp);
 
