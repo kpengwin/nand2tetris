@@ -50,7 +50,12 @@ void compileClassVarDec() {
 		  "missing type def", "");
 	requireT(isIdentifier(),
 		  "missing var name", "");
-	// TODO: also need to support multiple var declaration
+	while(isSymbolX(',')) { //comma sep list
+		print_current_token();
+		advance(CODE);
+		requireT(isIdentifier(),
+		   "missing var name", "");
+	}
 	requireT(isSymbolX(';'),
 		  "var dec must end with ';'", "");
 	printf("</classVarDec>\n");
@@ -83,11 +88,19 @@ void compileParameterList() {
 	if (isSymbolX(')')) {
 		printf("</parameterList>\n");
 		return;
-	} else { // TODO: need to handle more than one comma sep
+	} else {
 		requireT(isType(),
 		   "missing type def", "");
 		requireT(isIdentifier(),
 		   "missing var name", "");
+		while(isSymbolX(',')) { //comma sep list
+			print_current_token();
+			advance(CODE);
+			requireT(isType(),
+			"missing type def", "");
+			requireT(isIdentifier(),
+			"missing var name", "");
+		}
 	}
 	printf("</parameterList>\n");
 	return;
@@ -116,7 +129,14 @@ void compileVarDec() {
 		  "missing type def", "");
 	requireT(isIdentifier(),
 		  "missing var name", "");
-	// TODO: also need to support multiple var declaration
+	while(isSymbolX(',')) { //comma sep list
+		print_current_token();
+		advance(CODE);
+		requireT(isType(),
+		   "missing type def", "");
+		requireT(isIdentifier(),
+		   "missing var name", "");
+	}
 	requireT(isSymbolX(';'),
 		  "var dec must end with ';'", "");
 	printf("</varDec>\n");
@@ -241,6 +261,8 @@ void compileDo() {
 		requireT(isSymbolX('('), "missing (", "");
 		compileExpressionList();
 		requireT(isSymbolX(')'), "missing )", "");
+	} else {
+	assert(0 && "Missing ( in do statement");
 	}
 	requireT(isSymbolX(';'),
 		  "Do statement must be terminated by a ';'", "");
@@ -282,7 +304,7 @@ void compileExpression() {
  * is not part of this term and should not be advanced over */
 void compileTerm() {
 	printf("<term>\n");
-	requireT(isIdentifier(),
+	requireT((isIdentifier() || isKeywordX(K_THIS)),
 		  "must have an identifier", "");
 	printf("</term>\n");
 	return;
@@ -291,8 +313,17 @@ void compileTerm() {
 /* Compiles a (possibly empty) comma-separated list of expressions
  * Returns the number of expressions in the list */
 int compileExpressionList() {
+	int count = 0;
 	printf("<expressionList>\n");
+	while (! isSymbolX(')')) {
+		count ++;
+		if (isSymbolX(',')) {
+			print_current_token();
+			advance(CODE);
+		}
+		compileExpression();
+	}	
 	printf("</expressionList>\n");
-	return 0;
+	return count;
 }
 
