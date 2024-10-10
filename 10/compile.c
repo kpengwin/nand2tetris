@@ -286,6 +286,10 @@ void compileReturn() {
 }
 
 /* Compiles an expression */
+
+/* term: (op term)* */
+
+/* op: '+'|'-'|'*'|'/'|'&'|'|'|'<'|'>'|'=' */
 void compileExpression() {
 	printf("<expression>\n");
 	compileTerm();
@@ -302,6 +306,11 @@ void compileExpression() {
  * A single lookahead token, which may be [, (, or . suffices
  * to distinguish between the possibilities. Any other token 
  * is not part of this term and should not be advanced over */
+
+/* term: integerConstant|stringConstant|keywordConstant|varName|
+ * varName'['expression']'|'('expression')'|(unaryOp term)|subroutineCall */
+
+/* unary op: - | ~ */
 void compileTerm() {
 	printf("<term>\n");
 	requireT((isIdentifier() || isKeywordX(K_THIS)),
