@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <assert.h>
 
 // Project Includes
 #include "llist.h"
@@ -140,7 +141,8 @@ int advance(codelist *c) {
 		return 0;
 	}
 
-	return 1; // TODO: replace this with an error, as we should never get here.
+	assert(0 && "failed to advance");
+	return 1;
 }
 
 /* Returns the type of the current token */
