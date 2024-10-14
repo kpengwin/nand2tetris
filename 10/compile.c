@@ -294,7 +294,7 @@ void compileReturn() {
 void compileExpression() {
 	printf("<expression>\n");
 	compileTerm();
-	while (isSymbolX('+') | 
+	while (isSymbolX('+') |  // TODO: can make this a #define
 		isSymbolX('-') |
 		isSymbolX('*') |
 		isSymbolX('/') |
@@ -349,6 +349,11 @@ void compileTerm() {
 		if (isSymbolX('[')) {
 			//array element
 			printf("<identifier> %s </identifier>\n", lookback);
+			requireT(isSymbolX('['),
+				"array subscript must begin with '['", "");
+			compileExpression(); // TODO: verify that this is an expression
+			requireT(isSymbolX(']'),
+				"array subscript must end with ']'", "");
 			// TODO: figure out array element syntax
 		} else if (isSymbolX('(')) {
 			//subroutine call in this class
