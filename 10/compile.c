@@ -133,8 +133,6 @@ void compileVarDec() {
 	while(isSymbolX(',')) { //comma sep list
 		print_current_token();
 		advance(CODE);
-		requireT(isType(),
-		   "missing type def", "");
 		requireT(isIdentifier(),
 		   "missing var name", "");
 	}
@@ -186,6 +184,12 @@ void compileLet() {
 		  "<letStatement>\n");
 	requireT((tokenType() == T_IDENTIFIER),
 		  "Let can only assign to an identifier", "");
+	if (isSymbolX('[')) {
+		requireT(isSymbolX('['), "", "");
+		compileExpression();
+		requireT(isSymbolX(']'),
+		   "array element listing must end with ']", "");
+	}
 	requireT(isSymbolX('='),
 		  "Let statement must include '='", "");
 	compileExpression();
@@ -366,6 +370,7 @@ void compileTerm() {
 		} else if (isSymbolX('.')) {
 			//subroutine call in another class
 			printf("<identifier> %s </identifier>\n", lookback);
+			requireT(isSymbolX('.'), "", "");
 			requireT(isIdentifier(),
 				"missing subroutine name in call", "");
 			requireT(isSymbolX('('),
@@ -375,7 +380,7 @@ void compileTerm() {
 				"subroutine arguments must end with ')'", "");
 		} else {
 			//was just a variable and the current token is not part of the term
-			printf("<varName>%s</varName>\n", lookback);
+			printf("<identifier>%s</identifier>\n", lookback);
 		}
 	} else {
 		assert(0 && "expected term but did not match any case for term");

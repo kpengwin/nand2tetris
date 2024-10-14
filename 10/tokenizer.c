@@ -311,13 +311,13 @@ void print_current_token(void) {
 		case T_SYMBOL:
 			sym = symbol();
 			if (sym == '<')
-				printf("<symbol> &lt </symbol>\n");
+				printf("<symbol> &lt; </symbol>\n");
 			else if (sym == '>')
-				printf("<symbol> &gt </symbol>\n");
+				printf("<symbol> &gt; </symbol>\n");
 			else if (sym == '&')
-				printf("<symbol> &amp </symbol>\n");
+				printf("<symbol> &amp; </symbol>\n");
 			else if (sym == '"')
-				printf("<symbol> &quot </symbol>\n");
+				printf("<symbol> &quot; </symbol>\n");
 			else
 				printf("<symbol> %c </symbol>\n", sym);
 			break;
