@@ -21,13 +21,13 @@ Write the compiler in C as a learning project.
  * [done] Create .c and .h files, outline functions
  * Create tests in test.c
  * [done] Implement functions until the tests pass
-6. Complete compilation engine expressions (10.4.2 b)
+6. [done] Complete compilation engine expressions (10.4.2 b)
  * Create tests in test.c
  * Implement functions until the tests pass
-7. Complete compilation engine arrays (10.4.2 c)
+7. [done] Complete compilation engine arrays (10.4.2 c)
  * Create tests in test.c
  * Implement functions until the tests pass
-8. Roll the compilation engine functionality into main.c (actually use it)
+8. [done] Roll the compilation engine functionality into main.c (actually use it)
 9. Implement directory handling instead of just file handling
 10. Implement output to file option instead of stdout
 

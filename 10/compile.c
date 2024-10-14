@@ -355,10 +355,9 @@ void compileTerm() {
 			printf("<identifier> %s </identifier>\n", lookback);
 			requireT(isSymbolX('['),
 				"array subscript must begin with '['", "");
-			compileExpression(); // TODO: verify that this is an expression
+			compileExpression();
 			requireT(isSymbolX(']'),
 				"array subscript must end with ']'", "");
-			// TODO: figure out array element syntax
 		} else if (isSymbolX('(')) {
 			//subroutine call in this class
 			printf("<identifier> %s </identifier>\n", lookback);
