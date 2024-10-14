@@ -1,6 +1,7 @@
 // External Includes
 #include <stdio.h>
 #include <assert.h>
+#include <string.h>
 
 // Project Includes
 #include "compile.h"
@@ -293,6 +294,19 @@ void compileReturn() {
 void compileExpression() {
 	printf("<expression>\n");
 	compileTerm();
+	while (isSymbolX('+') | 
+		isSymbolX('-') |
+		isSymbolX('*') |
+		isSymbolX('/') |
+		isSymbolX('&') |
+		isSymbolX('|') |
+		isSymbolX('<') |
+		isSymbolX('>') |
+		isSymbolX('=') ) {
+		print_current_token();
+		advance(CODE);
+		compileTerm();
+	}
 	printf("</expression>\n");
 	return;
 }
@@ -313,8 +327,54 @@ void compileExpression() {
 /* unary op: - | ~ */
 void compileTerm() {
 	printf("<term>\n");
-	requireT((isIdentifier() || isKeywordX(K_THIS)),
-		  "must have an identifier", "");
+	if (isIntConst() ||
+	isStrConst() ||
+	isKwConst()) {
+		print_current_token();
+		advance(CODE);
+	} else if (isSymbolX('(')) {
+		requireT(isSymbolX('('),
+			"expression in term must begin with '('", "");
+		compileExpression();
+		requireT(isSymbolX(')'),
+			"expression in term must end with ')'", "");
+	} else if (isUnaryOp()) {
+		print_current_token();
+		advance(CODE);
+		compileTerm();
+	} else if (isIdentifier()) {
+		char lookback[512];
+		strcpy(lookback, cur_token); //save since we must look ahead
+		advance(CODE);
+		if (isSymbolX('[')) {
+			//array element
+			printf("<identifier> %s </identifier>\n", lookback);
+			// TODO: figure out array element syntax
+		} else if (isSymbolX('(')) {
+			//subroutine call in this class
+			printf("<identifier> %s </identifier>\n", lookback);
+			requireT(isSymbolX('('),
+				"subroutine arguments must begin with '('", "");
+			compileExpressionList();
+			requireT(isSymbolX(')'),
+				"subroutine arguments must end with ')'", "");
+		} else if (isSymbolX('.')) {
+			//subroutine call in another class
+			printf("<identifier> %s </identifier>\n", lookback);
+			requireT(isIdentifier(),
+				"missing subroutine name in call", "");
+			requireT(isSymbolX('('),
+				"subroutine arguments must begin with '('", "");
+			compileExpressionList();
+			requireT(isSymbolX(')'),
+				"subroutine arguments must end with ')'", "");
+		} else {
+			//was just a variable and the current token is not part of the term
+			printf("<varName>%s</varName>\n", lookback);
+		}
+	} else {
+		assert(0 && "expected term but did not match any case for term");
+	}
 	printf("</term>\n");
 	return;
 }

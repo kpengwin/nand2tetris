@@ -96,6 +96,7 @@ void print_current_token(void) ;
 #define isIntConst() (tokenType() == T_INT_CONST)
 #define isStrConst() (tokenType() == T_STRING_CONST)
 #define isKwConst() (isKeywordX(K_TRUE) || isKeywordX(K_FALSE) || isKeywordX(K_NULL) || isKeywordX(K_THIS))
+#define isUnaryOp() (isSymbolX('-') || isSymbolX('|') || isSymbolX('~'))
 
 #define tokenizer_h
 #endif
