@@ -25,5 +25,3 @@ void sll_rawprint(sllist* list, int with_cr) ;
 
 #define llist_h
 #endif
-
-
