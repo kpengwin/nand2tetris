@@ -1,7 +1,8 @@
 #ifndef compile_h
 #include "tokenizer.h"
+#include "symboltable.h"
 
-void initializeCompiler(codelist *code) ;
+void initializeCompiler(codelist *code, SYMBOL_TABLE *CLASS_TABLE, SYMBOL_TABLE *SUB_TABLE) ;
 
 /* Compiles a complete class */
 void compileClass() ;

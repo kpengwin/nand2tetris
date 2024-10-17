@@ -5,6 +5,7 @@
 #include "compile.h"
 #include "llist.h"
 #include "tokenizer.h"
+#include "symboltable.h"
 
 const char *argp_program_version = "jack-compy 0.2";
 const char *argp_program_bug_address = "<me@kenneth-bruce.com>";
@@ -111,8 +112,11 @@ int main(int argc, char**argv) {
 	code_list.line = code_list.source.head;
 	code_list.pos = &(code_list.line->field[0]);
 
+	SYMBOL_TABLE classTable;
+	SYMBOL_TABLE subTable;
+
 	init_tokenizer();
-	initializeCompiler(&code_list);
+	initializeCompiler(&code_list, &classTable, &subTable);
 	advance(&code_list);
 	compileClass();
 

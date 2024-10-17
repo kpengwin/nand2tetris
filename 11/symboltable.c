@@ -8,6 +8,27 @@
 
 #define STR_EQUAL 0
 
+char *S_STATIC = "static";
+char *S_FIELD = "field";
+char *S_ARG = "arg";
+char *S_VAR = "var";
+char *S_NONE = "none";
+
+char * kindToS(V_KIND kind) {
+	switch (kind) {
+		case V_STATIC:
+			return S_STATIC;
+		case V_FIELD:
+			return S_FIELD;
+		case V_ARG:
+			return S_ARG;
+		case V_VAR:
+			return S_VAR;
+		case V_NONE:
+			return S_NONE;
+	}
+}
+
 /* return the first blank row of the table */
 static int nextSymbolI(SYMBOL_TABLE * s) {
 	int i;

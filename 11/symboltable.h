@@ -4,11 +4,20 @@
 
 typedef enum {
 	V_STATIC,
-	V_SFIELD,
+	V_FIELD,
 	V_ARG,
 	V_VAR,
 	V_NONE, //Not a real kind, indicates failure
 } V_KIND;
+
+extern char* S_STATIC;
+extern char* S_FIELD;
+extern char* S_ARG;
+extern char* S_VAR;
+extern char* S_NONE;
+
+/* get the string value of a kind */
+char * kindToS(V_KIND kind) ;
 
 typedef struct {
 	char * name;

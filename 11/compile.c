@@ -1,11 +1,13 @@
 // External Includes
-#include <stdio.h>
 #include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 // Project Includes
 #include "compile.h"
 #include "tokenizer.h"
+#include "symboltable.h"
 
 #define requireT(assertion, err_msg, tag) {\
 	assert(assertion && err_msg);\
@@ -14,10 +16,44 @@
 	advance(CODE);\
 }
 
-codelist *CODE;
+#define requireI(usage, kind, type, err_msg) {\
+	assert(isIdentifier() && err_msg);\
+	printf("<identifier>");\
+	handleIdent(usage, kind, type);\
+	printf("</identifier>\n");\
+	advance(CODE);\
+}
 
-void initializeCompiler(codelist *code) {
+static codelist *CODE;
+static SYMBOL_TABLE *CLASS_TABLE;
+static SYMBOL_TABLE *SUB_TABLE;
+
+// WARN: Desn't work for class/sub
+void handleIdent(int usage, V_KIND kind, char * type) {
+	char *name = identifier();
+	SYMBOL_TABLE *TABLE;
+	if ((kind == V_STATIC) || (kind == V_FIELD)) {
+		TABLE=CLASS_TABLE;
+	} else {
+		TABLE=SUB_TABLE;
+	}
+
+	if (usage) {
+		define(TABLE, name, type, kind);
+	}
+
+	printf("Name: %s Category: %s Index: %d Usage %s",
+		name,
+		kindToS(kindOf(TABLE, name)),
+		indexOf(TABLE, name),
+		(usage) ? "declared" : "used");
+	free(name);
+}
+
+void initializeCompiler(codelist *code, SYMBOL_TABLE *classTable, SYMBOL_TABLE *subTable) {
 	CODE = code;
+	CLASS_TABLE = classTable;
+	SUB_TABLE = subTable;
 	return;
 }
 
