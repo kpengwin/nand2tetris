@@ -14,6 +14,7 @@ typedef struct {
 	char * name;
 	char * type;
 	V_KIND kind;
+	int index;
 } SYMBOL_TABLE_ENTRY;
 
 /* Not getting fancy here, but if needed we could dynamically allocate this 
