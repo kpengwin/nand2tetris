@@ -7,16 +7,16 @@ typedef struct codellist {
 	char* pos;
 } codelist;
 
-enum TOKEN_TYPE {
+typedef enum TOKEN_TYPE {
 	T_NULL,
 	T_KEYWORD,
 	T_SYMBOL,
 	T_IDENTIFIER,
 	T_INT_CONST,
 	T_STRING_CONST
-};
+} TOKEN_TYPE;
 
-enum KEYWORD {
+typedef enum KEYWORD {
 	K_ERR,    // Not a keyword, is an error
 	K_CLASS,
 	K_METHOD,
@@ -39,7 +39,7 @@ enum KEYWORD {
 	K_FALSE,
 	K_NULL,
 	K_THIS
-};
+} KEYWORD;
 
 extern char cur_token[512];
 extern int  STR_LITERAL;
@@ -63,10 +63,10 @@ int char_is_alphabet(char c) ;
 int advance(codelist *c) ;
 
 /* Returns the type of the current token */
-enum TOKEN_TYPE tokenType(void) ;
+TOKEN_TYPE tokenType(void) ;
 
 /* returns which keyword corresponds to the current token */
-enum KEYWORD keyword(void) ;
+KEYWORD keyword(void) ;
 
 
 /* returns the character of the current token */
