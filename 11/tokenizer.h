@@ -41,8 +41,21 @@ typedef enum KEYWORD {
 	K_THIS
 } KEYWORD;
 
-extern char cur_token[512];
+typedef union {
+	char str[512];
+	int val;
+	KEYWORD kw;
+	char c;
+} tokenHolder;
+
+typedef struct {
+	TOKEN_TYPE type;
+	tokenHolder t;
+} token;
+
 extern int  STR_LITERAL;
+extern char cur_token[512];
+extern token lastToken;
 
 // must call before using tokenizer
 void init_tokenizer(void) ;

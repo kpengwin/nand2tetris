@@ -14,6 +14,7 @@ int SYM_COUNT = 0;
 int STR_LITERAL = 0;
 
 char cur_token[512] = "";
+token lastToken;
 
 /* True if there are more tokens */
 int hasMoreTokens(codelist *c) {
@@ -42,6 +43,7 @@ int char_is_alphabet(char c) {
 
 void init_tokenizer() {
 	SYM_COUNT = strlen(SYMBOLS);
+	lastToken.type = T_NULL;
 }
 
 /* Advance to the next token */
@@ -302,35 +304,41 @@ char * k_to_s(enum KEYWORD word) {
 void print_current_token(void) {
 	char *t_str;
 	char sym;
-	switch (tokenType()) {
+	lastToken.type = tokenType();
+	switch (lastToken.type) {
 		case T_NULL:
 			break;
 		case T_KEYWORD:
-			printf("<keyword> %s </keyword>\n", k_to_s(keyword()));
+			/*strcpy(lastToken.t.str, k_to_s(keyword()));*/
+			lastToken.t.kw = keyword();
+			printf("<keyword> %s </keyword>\n", k_to_s(lastToken.t.kw));
 			break;
 		case T_SYMBOL:
-			sym = symbol();
-			if (sym == '<')
+			lastToken.t.c = symbol();
+			if (lastToken.t.c == '<')
 				printf("<symbol> &lt; </symbol>\n");
-			else if (sym == '>')
+			else if (lastToken.t.c == '>')
 				printf("<symbol> &gt; </symbol>\n");
-			else if (sym == '&')
+			else if (lastToken.t.c == '&')
 				printf("<symbol> &amp; </symbol>\n");
-			else if (sym == '"')
+			else if (lastToken.t.c == '"')
 				printf("<symbol> &quot; </symbol>\n");
 			else
 				printf("<symbol> %c </symbol>\n", sym);
 			break;
 		case T_IDENTIFIER:
 			t_str = identifier();
+			strcpy(lastToken.t.str, t_str); // TODO: identifier might be better if we passed in the memory vs allocating
 			printf("<identifier> %s </identifier>\n", t_str);
 			free(t_str);
 			break;
 		case T_INT_CONST:
-			printf("<integerConstant> %d </integerConstant>\n", intVal());
+			lastToken.t.val = intVal();
+			printf("<integerConstant> %d </integerConstant>\n", lastToken.t.val);
 			break;
 		case T_STRING_CONST:
 			t_str = stringVal();
+			strcpy(lastToken.t.str, t_str); // TODO: stringVal might be better if we passed in the memory vs allocating
 			printf("<stringConstant> %s </stringConstant>\n", t_str);
 			free(t_str);
 			break;
