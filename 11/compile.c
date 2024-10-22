@@ -24,13 +24,27 @@
 	advance(CODE);\
 }
 
+#define TOKEN_MEMORY 8
+
 static codelist *CODE;
 static SYMBOL_TABLE *CLASS_TABLE;
 static SYMBOL_TABLE *SUB_TABLE;
+static token t_mem[TOKEN_MEMORY];
 
-// WARN: Desn't work for class/sub
-void handleIdent(int usage, V_KIND kind, char * type) {
-	char *name = identifier();
+// WARN: Desn't work for class/sub - but those aren't in the symbol table anyways
+void handleIdent(USAGE usage) {
+	//t_mem
+	// 0 = KIND
+	V_KIND kind = kwToKind(t_getkw(&t_mem[0]));
+	// 1 = TYPE
+	char * type;
+	if (t_mem[1].type == T_IDENTIFIER)
+		type = t_getstr(&t_mem[1]);
+	else // KEYWORD TYPE
+		type = k_to_s(t_getkw(&t_mem[1]));
+	// 2 = NAME
+	char * name = t_getstr(&t_mem[2]);
+
 	SYMBOL_TABLE *TABLE;
 	if ((kind == V_STATIC) || (kind == V_FIELD)) {
 		TABLE=CLASS_TABLE;
@@ -38,7 +52,7 @@ void handleIdent(int usage, V_KIND kind, char * type) {
 		TABLE=SUB_TABLE;
 	}
 
-	if (usage) {
+	if (usage == DECLARE) {
 		define(TABLE, name, type, kind);
 	}
 
@@ -46,7 +60,7 @@ void handleIdent(int usage, V_KIND kind, char * type) {
 		name,
 		kindToS(kindOf(TABLE, name)),
 		indexOf(TABLE, name),
-		(usage) ? "declared" : "used");
+		(usage == DECLARE) ? "declared" : "used");
 	free(name);
 }
 
@@ -83,10 +97,14 @@ void compileClassVarDec() {
 	requireT((isKeywordX(K_STATIC) || isKeywordX(K_FIELD)),
 		  "var dec should be 'static' or 'field'",
 		  "<classVarDec>\n");
+	t_mem[0] = lastToken;
 	requireT(isType(),
 		  "missing type def", "");
+	t_mem[1] = lastToken;
 	requireT(isIdentifier(),
 		  "missing var name", "");
+	t_mem[2] = lastToken;
+	handleIdent(DECLARE);
 	while(isSymbolX(',')) { //comma sep list
 		print_current_token();
 		advance(CODE);

@@ -1,3 +1,4 @@
+#include "tokenizer.h"
 #ifndef symboltable_h
 #define MAX_SYMBOL_TABLE_ENTRIES 255
 #define NUM_KINDS 4
@@ -18,6 +19,11 @@ extern char* S_NONE;
 
 /* get the string value of a kind */
 char * kindToS(V_KIND kind) ;
+
+/* get the kind value of a keyword */
+/* returns kind of kw, defaulting to ARG which has no kw*/
+V_KIND kwToKind(KEYWORD kw) ;
+
 
 typedef struct {
 	char * name;

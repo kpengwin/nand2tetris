@@ -27,8 +27,25 @@ char * kindToS(V_KIND kind) {
 		case V_NONE:
 			return S_NONE;
 	}
+	assert(0);
+	return 0;
 }
 
+/* returns kind of kw, defaulting to ARG which has no kw*/
+V_KIND kwToKind(KEYWORD kw) {
+	switch (kw) {
+		case K_STATIC:
+			return V_STATIC;
+		case K_FIELD:
+			return V_FIELD;
+		case K_VAR:
+			return V_VAR;
+		default:
+			return V_ARG;
+	}
+	assert(0);
+	return 0;
+}
 /* return the first blank row of the table */
 static int nextSymbolI(SYMBOL_TABLE * s) {
 	int i;

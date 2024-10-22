@@ -2,6 +2,11 @@
 #include "tokenizer.h"
 #include "symboltable.h"
 
+typedef enum {
+	DECLARE,
+	USE,
+} USAGE;
+
 void initializeCompiler(codelist *code, SYMBOL_TABLE *CLASS_TABLE, SYMBOL_TABLE *SUB_TABLE) ;
 
 /* Compiles a complete class */

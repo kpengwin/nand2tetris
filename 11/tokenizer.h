@@ -114,4 +114,8 @@ void print_current_token(void) ;
 #define tokenizer_h
 #endif
 
-
+// token type utilities
+char * t_getstr(token *t) ;
+char t_getc(token *t) ;
+KEYWORD t_getkw(token *t) ;
+int t_getint(token *t) ;

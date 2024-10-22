@@ -303,7 +303,6 @@ char * k_to_s(enum KEYWORD word) {
 
 void print_current_token(void) {
 	char *t_str;
-	char sym;
 	lastToken.type = tokenType();
 	switch (lastToken.type) {
 		case T_NULL:
@@ -324,7 +323,7 @@ void print_current_token(void) {
 			else if (lastToken.t.c == '"')
 				printf("<symbol> &quot; </symbol>\n");
 			else
-				printf("<symbol> %c </symbol>\n", sym);
+				printf("<symbol> %c </symbol>\n", lastToken.t.c);
 			break;
 		case T_IDENTIFIER:
 			t_str = identifier();
@@ -344,4 +343,29 @@ void print_current_token(void) {
 			break;
 	}
 }
+
+
+
+// token type utilities
+char * t_getstr(token *t) {
+	assert((t->type == T_IDENTIFIER) || (t->type == T_STRING_CONST));
+	return t->t.str;
+}
+
+char t_getc(token *t) {
+	assert((t->type == T_SYMBOL));
+	return t->t.c;
+}
+
+KEYWORD t_getkw(token *t) {
+	assert((t->type == T_KEYWORD));
+	return t->t.kw;
+}
+
+int t_getint(token *t) {
+	assert((t->type == T_INT_CONST));
+	return t->t.val;
+}
+
+
 
