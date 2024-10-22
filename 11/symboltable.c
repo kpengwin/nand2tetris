@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 // Local includes
 #include "symboltable.h"
@@ -93,7 +94,8 @@ void define(SYMBOL_TABLE * s, char * name, char * type, V_KIND kind) {
 	s->entries[target].name = name;
 	s->entries[target].type = type;
 	s->entries[target].kind = kind;
-	s->entries[target].index = s->counts[kind]++;
+	s->entries[target].index = s->counts[kind];
+	s->counts[kind]++;
 	return;
 }
 

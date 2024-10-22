@@ -42,8 +42,11 @@ void handleIdent(USAGE usage) {
 		type = t_getstr(&t_mem[1]);
 	else // KEYWORD TYPE
 		type = k_to_s(t_getkw(&t_mem[1]));
-	// 2 = NAME
-	char * name = t_getstr(&t_mem[2]);
+	// 2 = NAME  NOTE: this is ugly because we call function twice
+	size_t len = strlen(t_getstr(&t_mem[2]));
+	char *name = calloc(len+1, sizeof(char));
+	strncpy(name, t_getstr(&t_mem[2]), len);
+	
 
 	SYMBOL_TABLE *TABLE;
 	if ((kind == V_STATIC) || (kind == V_FIELD)) {
@@ -56,12 +59,11 @@ void handleIdent(USAGE usage) {
 		define(TABLE, name, type, kind);
 	}
 
-	printf("Name: %s Category: %s Index: %d Usage %s",
+	printf("Name: <%s> Kind: <%s> Index: <%d> Usage <%s>\n",
 		name,
 		kindToS(kindOf(TABLE, name)),
 		indexOf(TABLE, name),
 		(usage == DECLARE) ? "declared" : "used");
-	free(name);
 }
 
 void initializeCompiler(codelist *code, SYMBOL_TABLE *classTable, SYMBOL_TABLE *subTable) {
@@ -110,6 +112,9 @@ void compileClassVarDec() {
 		advance(CODE);
 		requireT(isIdentifier(),
 		   "missing var name", "");
+		t_mem[2] = lastToken;
+		handleIdent(DECLARE);
+
 	}
 	requireT(isSymbolX(';'),
 		  "var dec must end with ';'", "");
@@ -180,15 +185,21 @@ void compileSubroutineBody() {
 void compileVarDec() {
 	requireT(isKeywordX(K_VAR),
 		  "compileVarDec() called without var keyword", "<varDec>\n");
+	t_mem[0] = lastToken;
 	requireT(isType(),
 		  "missing type def", "");
+	t_mem[1] = lastToken;
 	requireT(isIdentifier(),
 		  "missing var name", "");
+	t_mem[2] = lastToken;
+	handleIdent(DECLARE);
 	while(isSymbolX(',')) { //comma sep list
 		print_current_token();
 		advance(CODE);
 		requireT(isIdentifier(),
 		   "missing var name", "");
+		t_mem[2] = lastToken;
+		handleIdent(DECLARE);
 	}
 	requireT(isSymbolX(';'),
 		  "var dec must end with ';'", "");
