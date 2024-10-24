@@ -16,14 +16,6 @@
 	advance(CODE);\
 }
 
-#define requireI(usage, kind, type, err_msg) {\
-	assert(isIdentifier() && err_msg);\
-	printf("<identifier>");\
-	handleIdent(usage, kind, type);\
-	printf("</identifier>\n");\
-	advance(CODE);\
-}
-
 #define TOKEN_MEMORY 8
 
 static codelist *CODE;
@@ -31,21 +23,20 @@ static SYMBOL_TABLE *CLASS_TABLE;
 static SYMBOL_TABLE *SUB_TABLE;
 static token t_mem[TOKEN_MEMORY];
 
-// WARN: Desn't work for class/sub - but those aren't in the symbol table anyways
-void handleIdent(USAGE usage) {
+static void declareIdent(token *t_kind, token *t_type, token *t_name) {
 	//t_mem
 	// 0 = KIND
-	V_KIND kind = kwToKind(t_getkw(&t_mem[0]));
+	V_KIND kind = kwToKind(t_getkw(t_kind));
 	// 1 = TYPE
 	char * type;
-	if (t_mem[1].type == T_IDENTIFIER)
-		type = t_getstr(&t_mem[1]);
+	if (t_type->type == T_IDENTIFIER)
+		type = t_getstr(t_type);
 	else // KEYWORD TYPE
-		type = k_to_s(t_getkw(&t_mem[1]));
+		type = k_to_s(t_getkw(t_type));
 	// 2 = NAME  NOTE: this is ugly because we call function twice
-	size_t len = strlen(t_getstr(&t_mem[2]));
+	size_t len = strlen(t_getstr(t_name));
 	char *name = calloc(len+1, sizeof(char));
-	strncpy(name, t_getstr(&t_mem[2]), len);
+	strncpy(name, t_getstr(t_name), len);
 	
 
 	SYMBOL_TABLE *TABLE;
@@ -55,15 +46,45 @@ void handleIdent(USAGE usage) {
 		TABLE=SUB_TABLE;
 	}
 
-	if (usage == DECLARE) {
-		define(TABLE, name, type, kind);
-	}
+	define(TABLE, name, type, kind);
 
 	printf("Name: <%s> Kind: <%s> Index: <%d> Usage <%s>\n",
 		name,
 		kindToS(kindOf(TABLE, name)),
 		indexOf(TABLE, name),
-		(usage == DECLARE) ? "declared" : "used");
+		"declared");
+}
+
+static void useIdent(token *t_name) {
+	// 0 NAME  NOTE: this is ugly because we call function twice
+	size_t len = strlen(t_getstr(t_name));
+	char *name = calloc(len+1, sizeof(char));
+	strncpy(name, t_getstr(t_name), len);
+
+	SYMBOL_TABLE *TABLE = 0;
+	if (kindOf(SUB_TABLE, name) != V_NONE) {
+		// Found it in SUB_TABLE
+		TABLE = SUB_TABLE;
+	} else if (kindOf(CLASS_TABLE, name) != V_NONE) {
+		//found it in CLASS_TABLE
+		TABLE = CLASS_TABLE;
+	}
+
+	V_KIND kind = V_NONE;
+	char * type = "subroutine";
+	int index = 0;
+
+	if (TABLE) {
+		kind = kindOf(TABLE, name);
+		type = typeOf(TABLE, name);
+		index = indexOf(TABLE, name);
+	}
+	
+	printf("Name: <%s> Kind: <%s> Index: <%d> Usage <%s>\n",
+		name,
+		kindToS(kind),
+		index,
+		"used");
 }
 
 void initializeCompiler(codelist *code, SYMBOL_TABLE *classTable, SYMBOL_TABLE *subTable) {
@@ -106,15 +127,14 @@ void compileClassVarDec() {
 	requireT(isIdentifier(),
 		  "missing var name", "");
 	t_mem[2] = lastToken;
-	handleIdent(DECLARE);
+	declareIdent(&t_mem[0], &t_mem[1], &t_mem[2]);
 	while(isSymbolX(',')) { //comma sep list
 		print_current_token();
 		advance(CODE);
 		requireT(isIdentifier(),
 		   "missing var name", "");
 		t_mem[2] = lastToken;
-		handleIdent(DECLARE);
-
+		declareIdent(&t_mem[0], &t_mem[1], &t_mem[2]);
 	}
 	requireT(isSymbolX(';'),
 		  "var dec must end with ';'", "");
@@ -149,6 +169,7 @@ void compileParameterList() {
 		printf("</parameterList>\n");
 		return;
 	} else {
+		// TODO: add args to symbol table
 		requireT(isType(),
 		   "missing type def", "");
 		requireT(isIdentifier(),
@@ -192,14 +213,14 @@ void compileVarDec() {
 	requireT(isIdentifier(),
 		  "missing var name", "");
 	t_mem[2] = lastToken;
-	handleIdent(DECLARE);
+	declareIdent(&t_mem[0], &t_mem[1], &t_mem[2]);
 	while(isSymbolX(',')) { //comma sep list
 		print_current_token();
 		advance(CODE);
 		requireT(isIdentifier(),
 		   "missing var name", "");
 		t_mem[2] = lastToken;
-		handleIdent(DECLARE);
+		declareIdent(&t_mem[0], &t_mem[1], &t_mem[2]);
 	}
 	requireT(isSymbolX(';'),
 		  "var dec must end with ';'", "");
@@ -247,6 +268,7 @@ void compileLet() {
 	requireT(isKeywordX(K_LET),
 		  "compileLet() called with non-let statement",
 		  "<letStatement>\n");
+	// TODO: look this up in symbol table
 	requireT((tokenType() == T_IDENTIFIER),
 		  "Let can only assign to an identifier", "");
 	if (isSymbolX('[')) {
@@ -412,6 +434,7 @@ void compileTerm() {
 		advance(CODE);
 		compileTerm();
 	} else if (isIdentifier()) {
+		// TODO: look this up in the symbol table
 		char lookback[512];
 		strcpy(lookback, cur_token); //save since we must look ahead
 		advance(CODE);

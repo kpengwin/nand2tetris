@@ -106,7 +106,7 @@ int varCount(SYMBOL_TABLE * s, V_KIND kind) {
 }
 
 /* Returns the kind of the named identifier. If the identifier is not found,
-* returns */
+* returns V_NONE */
 V_KIND kindOf(SYMBOL_TABLE * s, char * name) {
 	int row = findByName(s, name);
 	return (row == -1) ? V_NONE : s->entries[row].kind;

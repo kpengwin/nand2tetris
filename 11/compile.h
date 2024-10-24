@@ -1,71 +1,70 @@
 #ifndef compile_h
-#include "tokenizer.h"
 #include "symboltable.h"
+#include "tokenizer.h"
 
 typedef enum {
-	DECLARE,
-	USE,
+  DECLARE,
+  USE,
 } USAGE;
 
-void initializeCompiler(codelist *code, SYMBOL_TABLE *CLASS_TABLE, SYMBOL_TABLE *SUB_TABLE) ;
+void initializeCompiler(codelist *code, SYMBOL_TABLE *CLASS_TABLE,
+                        SYMBOL_TABLE *SUB_TABLE);
 
 /* Compiles a complete class */
-void compileClass() ;
+void compileClass();
 
 /* Compiles a static variable or field declarations*/
-void compileClassVarDec() ;
+void compileClassVarDec();
 
 /* Compiles a complete method, function, or constructor*/
-void compileSubroutine() ;
+void compileSubroutine();
 
-/* Compiles a possibly empty parameter list. Does not handle the 
+/* Compiles a possibly empty parameter list. Does not handle the
  * enclosing parenthesis tokens ( and ) */
-void compileParameterList() ;
+void compileParameterList();
 
 /* Compiles a subroutine's body */
-void compileSubroutineBody() ;
+void compileSubroutineBody();
 
 /* Compiles a var declaration */
-void compileVarDec() ;
+void compileVarDec();
 
 /* Compiles a sequence of statements. Does not handle the ennclosing
  * curly bracket tokens ; */
-void compileStatements() ;
+void compileStatements();
 
 /* Compiles a let statement */
-void compileLet() ;
+void compileLet();
 
 /* Compiles an if statement possibly with a trailing else clause */
-void compileIf() ;
+void compileIf();
 
 /* Compiles a while statement */
-void compileWhile() ;
+void compileWhile();
 
 /* Compiles do statement */
-void compileDo() ;
+void compileDo();
 
 /* Compiles a return statement */
-void compileReturn() ;
+void compileReturn();
 
 /* Compiles an expression */
-void compileExpression() ;
+void compileExpression();
 
-/* Compiles a 'term' If the current token is an 
+/* Compiles a 'term' If the current token is an
  *	- identifier, it is resolved into one of:
  *		- variable
  *		- array element
  *		- subroutine call
  *
  * A single lookahead token, which may be [, (, or . suffices
- * to distinguish between the possibilities. Any other token 
+ * to distinguish between the possibilities. Any other token
  * is not part of this term and should not be advanced over */
-void compileTerm() ;
+void compileTerm();
 
 /* Compiles a (possibly empty) comma-separated list of expressions
  * Returns the number of expressions in the list */
-int compileExpressionList() ;
+int compileExpressionList();
 
 #define compile_h
 #endif
-
-
