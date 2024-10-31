@@ -71,12 +71,12 @@ static void useIdent(token *t_name) {
 	}
 
 	V_KIND kind = V_NONE;
-	char * type = "subroutine";
+	/*char * type = "subroutine";*/
 	int index = 0;
 
 	if (TABLE) {
 		kind = kindOf(TABLE, name);
-		type = typeOf(TABLE, name);
+		/*type = typeOf(TABLE, name);*/
 		index = indexOf(TABLE, name);
 	}
 	
@@ -271,6 +271,8 @@ void compileLet() {
 	// TODO: look this up in symbol table
 	requireT((tokenType() == T_IDENTIFIER),
 		  "Let can only assign to an identifier", "");
+	t_mem[0] = lastToken; // save the token since it will change
+	useIdent(&t_mem[0]);
 	if (isSymbolX('[')) {
 		requireT(isSymbolX('['), "", "");
 		compileExpression();
@@ -437,6 +439,8 @@ void compileTerm() {
 		// TODO: look this up in the symbol table
 		char lookback[512];
 		strcpy(lookback, cur_token); //save since we must look ahead
+		record_current_token();
+		t_mem[0] = lastToken; // save the token since it will change
 		advance(CODE);
 		if (isSymbolX('[')) {
 			//array element
@@ -468,6 +472,8 @@ void compileTerm() {
 		} else {
 			//was just a variable and the current token is not part of the term
 			printf("<identifier>%s</identifier>\n", lookback);
+			useIdent(&t_mem[0]);
+			
 		}
 	} else {
 		assert(0 && "expected term but did not match any case for term");

@@ -11,7 +11,7 @@ Finish the compiler in C as a learning project.
 
 ## Implementation steps
 
-1. Copy project and create API outlines
+1. [done] Copy project and create API outlines
 2. Symbol Table
 3. Code generation
  a. Pass Seven
