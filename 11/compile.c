@@ -48,11 +48,12 @@ static void declareIdent(token *t_kind, token *t_type, token *t_name) {
 
 	define(TABLE, name, type, kind);
 
-	printf("Name: <%s> Kind: <%s> Index: <%d> Usage <%s>\n",
+	printf("Name: <%s> Kind: <%s> Index: <%d> Usage <%s> Table: <%s>\n",
 		name,
 		kindToS(kindOf(TABLE, name)),
 		indexOf(TABLE, name),
-		"declared");
+		"declared",
+		TABLE == CLASS_TABLE ? "Class" : "Sub");
 }
 
 static void useIdent(token *t_name) {
@@ -80,11 +81,12 @@ static void useIdent(token *t_name) {
 		index = indexOf(TABLE, name);
 	}
 	
-	printf("Name: <%s> Kind: <%s> Index: <%d> Usage <%s>\n",
+	printf("Name: <%s> Kind: <%s> Index: <%d> Usage <%s> Table: <%s>\n",
 		name,
 		kindToS(kind),
 		index,
-		"used");
+		"used",
+		TABLE == CLASS_TABLE ? "Class" : "Sub");
 }
 
 void initializeCompiler(codelist *code, SYMBOL_TABLE *classTable, SYMBOL_TABLE *subTable) {
@@ -144,6 +146,7 @@ void compileClassVarDec() {
 
 /* Compiles a complete method, function, or constructor*/
 void compileSubroutine() {
+	reset(SUB_TABLE); // Always need to reset this when starting a sub declaration
 	requireT((isKeywordX(K_CONSTRUCTOR) || isKeywordX(K_FUNCTION) || isKeywordX(K_METHOD)),
 		  "subroutine dec should be 'constructor' or 'function' or 'method'",
 		  "<subroutineDec>\n");
