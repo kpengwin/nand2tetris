@@ -16,6 +16,12 @@
 	advance(CODE);\
 }
 
+#define requireT_silent(assertion, err_msg, tag) {\
+	assert(assertion && err_msg);\
+	record_current_token();\
+	advance(CODE);\
+}
+
 #define TOKEN_MEMORY 8
 
 static codelist *CODE;
@@ -48,7 +54,7 @@ static void declareIdent(token *t_kind, token *t_type, token *t_name) {
 
 	define(TABLE, name, type, kind);
 
-	printf("Name: <%s> Kind: <%s> Index: <%d> Usage <%s> Table: <%s>\n",
+	printf("<identifier> <name>%s</name> <kind>%s</kind> <index>%d</index> <usage>%s</usage> <table>%s</table> </identifier>\n",
 		name,
 		kindToS(kindOf(TABLE, name)),
 		indexOf(TABLE, name),
@@ -81,7 +87,7 @@ static void useIdent(token *t_name) {
 		index = indexOf(TABLE, name);
 	}
 	
-	printf("Name: <%s> Kind: <%s> Index: <%d> Usage <%s> Table: <%s>\n",
+	printf("<identifier> <name>%s</name> <kind>%s</kind> <index>%d</index> <usage>%s</usage> <table>%s</table> </identifier>\n",
 		name,
 		kindToS(kind),
 		index,
@@ -126,14 +132,14 @@ void compileClassVarDec() {
 	requireT(isType(),
 		  "missing type def", "");
 	t_mem[1] = lastToken;
-	requireT(isIdentifier(),
+	requireT_silent(isIdentifier(),
 		  "missing var name", "");
 	t_mem[2] = lastToken;
 	declareIdent(&t_mem[0], &t_mem[1], &t_mem[2]);
 	while(isSymbolX(',')) { //comma sep list
 		print_current_token();
 		advance(CODE);
-		requireT(isIdentifier(),
+		requireT_silent(isIdentifier(),
 		   "missing var name", "");
 		t_mem[2] = lastToken;
 		declareIdent(&t_mem[0], &t_mem[1], &t_mem[2]);
@@ -172,18 +178,24 @@ void compileParameterList() {
 		printf("</parameterList>\n");
 		return;
 	} else {
-		// TODO: add args to symbol table
+		t_mem[0].type = T_KEYWORD; t_mem[0].t.kw = K_METHOD; // to specify this is an arg
 		requireT(isType(),
 		   "missing type def", "");
-		requireT(isIdentifier(),
+		t_mem[1] = lastToken;
+		requireT_silent(isIdentifier(),
 		   "missing var name", "");
+		t_mem[2] = lastToken;
+		declareIdent(&t_mem[0], &t_mem[1], &t_mem[2]);
 		while(isSymbolX(',')) { //comma sep list
 			print_current_token();
 			advance(CODE);
 			requireT(isType(),
 			"missing type def", "");
+			t_mem[1] = lastToken;
 			requireT(isIdentifier(),
 			"missing var name", "");
+			t_mem[2] = lastToken;
+			declareIdent(&t_mem[0], &t_mem[1], &t_mem[2]);
 		}
 	}
 	printf("</parameterList>\n");
@@ -213,14 +225,14 @@ void compileVarDec() {
 	requireT(isType(),
 		  "missing type def", "");
 	t_mem[1] = lastToken;
-	requireT(isIdentifier(),
+	requireT_silent(isIdentifier(),
 		  "missing var name", "");
 	t_mem[2] = lastToken;
 	declareIdent(&t_mem[0], &t_mem[1], &t_mem[2]);
 	while(isSymbolX(',')) { //comma sep list
 		print_current_token();
 		advance(CODE);
-		requireT(isIdentifier(),
+		requireT_silent(isIdentifier(),
 		   "missing var name", "");
 		t_mem[2] = lastToken;
 		declareIdent(&t_mem[0], &t_mem[1], &t_mem[2]);
@@ -271,8 +283,7 @@ void compileLet() {
 	requireT(isKeywordX(K_LET),
 		  "compileLet() called with non-let statement",
 		  "<letStatement>\n");
-	// TODO: look this up in symbol table
-	requireT((tokenType() == T_IDENTIFIER),
+	requireT_silent((tokenType() == T_IDENTIFIER),
 		  "Let can only assign to an identifier", "");
 	t_mem[0] = lastToken; // save the token since it will change
 	useIdent(&t_mem[0]);
@@ -439,7 +450,6 @@ void compileTerm() {
 		advance(CODE);
 		compileTerm();
 	} else if (isIdentifier()) {
-		// TODO: look this up in the symbol table
 		char lookback[512];
 		strcpy(lookback, cur_token); //save since we must look ahead
 		record_current_token();
@@ -474,7 +484,6 @@ void compileTerm() {
 				"subroutine arguments must end with ')'", "");
 		} else {
 			//was just a variable and the current token is not part of the term
-			printf("<identifier>%s</identifier>\n", lookback);
 			useIdent(&t_mem[0]);
 			
 		}

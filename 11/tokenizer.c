@@ -309,12 +309,12 @@ void print_current_token(void) {
 			break;
 		case T_KEYWORD:
 			/*strcpy(lastToken.t.str, k_to_s(keyword()));*/
-			puts("keyword \n");
+			/*puts("keyword \n");*/
 			lastToken.t.kw = keyword();
 			printf("<keyword> %s </keyword>\n", k_to_s(lastToken.t.kw));
 			break;
 		case T_SYMBOL:
-			puts("symbol \n");
+			/*puts("symbol \n");*/
 			lastToken.t.c = symbol();
 			if (lastToken.t.c == '<')
 				printf("<symbol> &lt; </symbol>\n");
@@ -328,19 +328,19 @@ void print_current_token(void) {
 				printf("<symbol> %c </symbol>\n", lastToken.t.c);
 			break;
 		case T_IDENTIFIER:
-			puts("identifier \n");
+			/*puts("identifier \n");*/
 			t_str = identifier();
 			strcpy(lastToken.t.str, t_str); // TODO: identifier might be better if we passed in the memory vs allocating
 			printf("<identifier> %s </identifier>\n", t_str);
 			free(t_str);
 			break;
 		case T_INT_CONST:
-			puts("int const \n");
+			/*puts("int const \n");*/
 			lastToken.t.val = intVal();
 			printf("<integerConstant> %d </integerConstant>\n", lastToken.t.val);
 			break;
 		case T_STRING_CONST:
-			puts("string const \n");
+			/*puts("string const \n");*/
 			t_str = stringVal();
 			strcpy(lastToken.t.str, t_str); // TODO: stringVal might be better if we passed in the memory vs allocating
 			printf("<stringConstant> %s </stringConstant>\n", t_str);
@@ -360,21 +360,21 @@ void record_current_token(void) {
 			lastToken.t.kw = keyword();
 			break;
 		case T_SYMBOL:
-			puts("symbol \n");
+			/*puts("symbol \n");*/
 			lastToken.t.c = symbol();
 			break;
 		case T_IDENTIFIER:
-			puts("identifier \n");
+			/*puts("identifier \n");*/
 			t_str = identifier();
 			strcpy(lastToken.t.str, t_str); // TODO: identifier might be better if we passed in the memory vs allocating
 			free(t_str);
 			break;
 		case T_INT_CONST:
-			puts("int const \n");
+			/*puts("int const \n");*/
 			lastToken.t.val = intVal();
 			break;
 		case T_STRING_CONST:
-			puts("string const \n");
+			/*puts("string const \n");*/
 			t_str = stringVal();
 			strcpy(lastToken.t.str, t_str); // TODO: stringVal might be better if we passed in the memory vs allocating
 			free(t_str);
